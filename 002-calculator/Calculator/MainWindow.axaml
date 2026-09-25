@@ -2,20 +2,26 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="400"
+        Width="600" Height="400"
         x:Class="Calculator.MainWindow"
         Title="Calculator">
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
+    <StackPanel Margin="20" Spacing="15" VerticalAlignment="Top" MaxWidth="600">
+
         <ToggleSwitch Name="CalculationModeSwitch"
                       HorizontalAlignment="Center"
                       OffContent="Simple Mode"
                       OnContent="Expression Evaluation"
                       IsCheckedChanged="OnModeChanged" />
-        <StackPanel Orientation="Vertical" Name="SimpleCalculationModePanel">
+
+        <StackPanel Name="SimpleCalculationModePanel"
+                    HorizontalAlignment="Center"
+                    Spacing="8">
             <TextBlock Name="Calculation"></TextBlock>
             <Grid HorizontalAlignment="Center"
                   VerticalAlignment="Center"
-                  RowSpacing="10"
+                  RowSpacing="8"
+                  ColumnSpacing="2"
                   RowDefinitions="Auto,Auto,Auto,Auto"
                   ColumnDefinitions="Auto,Auto,Auto,Auto,Auto">
 
@@ -57,19 +63,24 @@
                 <Button Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="3" Tag="=" Click="OnButtonClick">=</Button>
             </Grid>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Name="ExpressionEvaluationModePanel" Spacing="8" IsVisible="False">
-            <TextBox Width="200" Name="ExpressionText"></TextBox>
-            <Button Click="OnEvaluateExpressionClick">Evaluate</Button>
-        </StackPanel>
-        <StackPanel Orientation="Horizontal">
-            <TextBlock Name="Result" Width="200"></TextBlock>
-            <Slider Name="DecimalSlider"
+        <Grid Name="ExpressionEvaluationModePanel"
+              ColumnDefinitions="*,Auto"
+              ColumnSpacing="8"
+              IsVisible="False">
+            <TextBox Name="ExpressionText"></TextBox>
+            <Button Grid.Column="1" Click="OnEvaluateExpressionClick">Evaluate</Button>
+        </Grid>
+        <Grid ColumnDefinitions="*,200" Margin="0,10,0,0">
+            <TextBlock Name="Result" 
+                       VerticalAlignment="Center"
+                       Margin="60,0,0,0"/>
+            <Slider Grid.Column="1" 
+                    Name="DecimalSlider"
                     Minimum="0"
                     Maximum="8"
                     TickFrequency="1"
                     IsSnapToTickEnabled="True"
-                    Width="200"
-                    Value="2" />
-        </StackPanel>
+                    Value="4" />
+        </Grid>
     </StackPanel>
 </Window>
