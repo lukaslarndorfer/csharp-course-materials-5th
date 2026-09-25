@@ -7,6 +7,9 @@ public partial class MainWindow : Window
 {
 
     private string _calculation = string.Empty; 
+    private const string EqualKey = "=";
+    private string _result = string.Empty; 
+
     public MainWindow()
     {
         InitializeComponent();
@@ -14,17 +17,26 @@ public partial class MainWindow : Window
 
     private void OnButtonClick(object? sender, RoutedEventArgs e)
     {
-        if (sender is Button { Tag: not null } button)
+        if (sender is not Button { Tag: not null } button)
         {
-            var input =  button.Tag.ToString();
-            _calculation = CalculationLogic.HandleCalculationInput(_calculation, input ?? string.Empty);
-            UpdateCalculation();
+            return;
         }
+        
+        var input =  button.Tag.ToString();
+        if (input == EqualKey)
+        {
+            _result = CalculationLogic.Evaluate(_calculation);
+        } else
+        {
+            _calculation = CalculationLogic.HandleInput(_calculation, input ?? string.Empty);
+        }
+        UpdateDisplay();
     }
 
-    private void UpdateCalculation()
+    private void UpdateDisplay()
     {
         Calculation.Text =  _calculation;
+        Result.Text = _result;
     }
     
     

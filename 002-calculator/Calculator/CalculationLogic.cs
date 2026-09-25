@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
+using NCalc;
 
 namespace Calculator;
 
@@ -7,16 +9,16 @@ public static class CalculationLogic
 {
     private const string ClearKey = "Clear";
     private const char DecimalSeparator = '.';
+
     private static readonly char[] Operators = ['+', '*', '-', '/'];
 
-    public static string HandleCalculationInput(string current, string input)
+    public static string HandleInput(string current, string input)
     {
         if (input == ClearKey)
         {
             return "";
         }
 
-        // Clear is already filtered out
         if (input.Length != 1)
         {
             return current; // invalid input
@@ -45,8 +47,9 @@ public static class CalculationLogic
         
         return IsOperator(last) || last == DecimalSeparator 
             ? current[..^1]  + c // substitute operator or drop dangling separator
-            : current   ;
+            : current + c;
     }
+    
 
     private static bool IsOperator(char c)
         => Enumerable.Contains(Operators, c);
@@ -56,5 +59,19 @@ public static class CalculationLogic
         var start = current.LastIndexOfAny(Operators) + 1;
 
         return current[start..].Contains(DecimalSeparator);
+    }
+
+    public static string Evaluate(string calculation)
+    {
+        var expression = new Expression(calculation);
+        try
+        {
+            var evaluation = expression.Evaluate();
+            return Convert.ToString(evaluation, CultureInfo.InvariantCulture) ?? "";
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
     }
 }
