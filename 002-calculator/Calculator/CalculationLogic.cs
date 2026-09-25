@@ -61,22 +61,20 @@ public static class CalculationLogic
         return current[start..].Contains(DecimalSeparator);
     }
     
-    public static bool TryEvaluate(string calculation, out double result, out string? error)
+    public static (double? result, string? error) Evaluate(string calculation)
     {
-        result = 0;
-        error = null;
         try
         {
             var expression = new Expression(calculation);
             var evaluation = expression.Evaluate();
-            result = Convert.ToDouble(evaluation, CultureInfo.InvariantCulture);
-            return true;
+            var result = Convert.ToDouble(evaluation, CultureInfo.InvariantCulture);
+            return (result, null);
         }
         
         catch (Exception ex)
         {
-            error = ex.Message;
-            return false;
+            var error = ex.Message;
+            return (null, error);
         }
         
 

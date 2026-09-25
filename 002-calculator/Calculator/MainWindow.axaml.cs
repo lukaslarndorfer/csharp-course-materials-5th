@@ -33,8 +33,7 @@ public partial class MainWindow : Window
         var input = button.Tag.ToString();
         if (input == EqualKey)
         {
-            var success = CalculationLogic.TryEvaluate(_calculation, out var value, out _simpleError);
-            _simpleResult = success ? value : null;
+            (_simpleResult, _simpleError) = CalculationLogic.Evaluate(_calculation);
         }
         else
         {
@@ -65,8 +64,7 @@ public partial class MainWindow : Window
 
     private void OnEvaluateExpressionClick(object? sender, RoutedEventArgs e)
     {
-        var success = CalculationLogic.TryEvaluate(ExpressionText.Text ?? "", out var value, out _expressionError);
-        _expressionResult = success ? value : null;
+        (_expressionResult, _expressionError) = CalculationLogic.Evaluate(ExpressionText.Text ?? "");
         UpdateDisplay();
     }
 }
