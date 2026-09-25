@@ -1,5 +1,6 @@
 using System.Globalization;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 
 namespace Calculator;
@@ -62,7 +63,18 @@ public partial class MainWindow : Window
         UpdateDisplay();
     }
 
-    private void OnEvaluateExpressionClick(object? sender, RoutedEventArgs e)
+    private void OnEvaluateExpressionClick(object? sender, RoutedEventArgs e) => EvaluateExpression();
+
+    private void OnExpressionTextKeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Enter)
+        {
+            return;
+        }
+        EvaluateExpression();
+    }
+
+    private void EvaluateExpression()
     {
         (_expressionResult, _expressionError) = CalculationLogic.Evaluate(ExpressionText.Text ?? "");
         UpdateDisplay();
