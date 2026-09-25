@@ -65,7 +65,12 @@ public static class CalculationLogic
     {
         try
         {
-            var expression = new Expression(calculation);
+            var cleaned = calculation.Trim().TrimEnd(Operators); // NCalc throws if there are trailing operators
+            if (cleaned.Length == 0)
+            {
+                return (null, null); // nothing to calculate, nothing to show
+            }
+            var expression = new Expression(cleaned);
             var evaluation = expression.Evaluate();
             var result = Convert.ToDouble(evaluation, CultureInfo.InvariantCulture);
             return (result, null);
