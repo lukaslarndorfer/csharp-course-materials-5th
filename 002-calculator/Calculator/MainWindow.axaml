@@ -6,55 +6,70 @@
         x:Class="Calculator.MainWindow"
         Title="Calculator">
     <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="10">
-        <TextBlock Name="Calculation"></TextBlock>
-        <Grid HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              RowSpacing="10"
-              RowDefinitions="Auto,Auto,Auto,Auto"
-              ColumnDefinitions="Auto,Auto,Auto,Auto,Auto">
+        <ToggleSwitch Name="CalculationModeSwitch"
+                      HorizontalAlignment="Center"
+                      OffContent="Simple Mode"
+                      OnContent="Expression Evaluation"
+                      IsCheckedChanged="OnModeChanged" />
+        <StackPanel Orientation="Vertical" Name="SimpleCalculationModePanel">
+            <TextBlock Name="Calculation"></TextBlock>
+            <Grid HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  RowSpacing="10"
+                  RowDefinitions="Auto,Auto,Auto,Auto"
+                  ColumnDefinitions="Auto,Auto,Auto,Auto,Auto">
 
-            <Grid.Styles>
-                <Style Selector="Button">
-                    <Setter Property="HorizontalAlignment" Value="Stretch" />
-                    <Setter Property="HorizontalContentAlignment" Value="Center" />
-                    <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, Menlo, DejaVu Sans Mono, monospace" />
-                    <!-- cover all operating systems fonts that represent mono -->
-                </Style>
-                <Style Selector="Button.clear">
-                    <Setter Property="Foreground" Value="Red" />
-                </Style>
-            </Grid.Styles>
+                <Grid.Styles>
+                    <Style Selector="Button">
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="HorizontalContentAlignment" Value="Center" />
+                        <Setter Property="FontFamily"
+                                Value="Cascadia Mono, Consolas, Menlo, DejaVu Sans Mono, monospace" />
+                        <!-- cover all operating systems fonts that represent mono -->
+                    </Style>
+                    <Style Selector="Button.clear">
+                        <Setter Property="Foreground" Value="Red" />
+                    </Style>
+                </Grid.Styles>
 
-            <Button Grid.Row="0" Grid.Column="0" Tag="7" Click="OnButtonClick">7</Button>
-            <Button Grid.Row="0" Grid.Column="1" Tag="8" Click="OnButtonClick">8</Button>
-            <Button Grid.Row="0" Grid.Column="2" Tag="9" Click="OnButtonClick">9</Button>
-            <Button Grid.Row="0" Grid.Column="3" Tag="/" Click="OnButtonClick">/</Button>
-            <Button Grid.Row="0" Grid.Column="4" Tag="*" Click="OnButtonClick">*</Button>
+                <Button Grid.Row="0" Grid.Column="0" Tag="7" Click="OnButtonClick">7</Button>
+                <Button Grid.Row="0" Grid.Column="1" Tag="8" Click="OnButtonClick">8</Button>
+                <Button Grid.Row="0" Grid.Column="2" Tag="9" Click="OnButtonClick">9</Button>
+                <Button Grid.Row="0" Grid.Column="3" Tag="/" Click="OnButtonClick">/</Button>
+                <Button Grid.Row="0" Grid.Column="4" Tag="*" Click="OnButtonClick">*</Button>
 
-            <Button Grid.Row="1" Grid.Column="0" Tag="4" Click="OnButtonClick">4</Button>
-            <Button Grid.Row="1" Grid.Column="1" Tag="5" Click="OnButtonClick">5</Button>
-            <Button Grid.Row="1" Grid.Column="2" Tag="6" Click="OnButtonClick">6</Button>
-            <Button Grid.Row="1" Grid.Column="3" Tag="+" Click="OnButtonClick">+</Button>
-            <Button Grid.Row="1" Grid.Column="4" Tag="-" Click="OnButtonClick">-</Button>
+                <Button Grid.Row="1" Grid.Column="0" Tag="4" Click="OnButtonClick">4</Button>
+                <Button Grid.Row="1" Grid.Column="1" Tag="5" Click="OnButtonClick">5</Button>
+                <Button Grid.Row="1" Grid.Column="2" Tag="6" Click="OnButtonClick">6</Button>
+                <Button Grid.Row="1" Grid.Column="3" Tag="+" Click="OnButtonClick">+</Button>
+                <Button Grid.Row="1" Grid.Column="4" Tag="-" Click="OnButtonClick">-</Button>
 
-            <Button Grid.Row="2" Grid.Column="0" Tag="1" Click="OnButtonClick">1</Button>
-            <Button Grid.Row="2" Grid.Column="1" Tag="2" Click="OnButtonClick">2</Button>
-            <Button Grid.Row="2" Grid.Column="2" Tag="3" Click="OnButtonClick">3</Button>
-            <Button Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" Tag="Clear" Classes="clear" Click="OnButtonClick">Clear</Button>
+                <Button Grid.Row="2" Grid.Column="0" Tag="1" Click="OnButtonClick">1</Button>
+                <Button Grid.Row="2" Grid.Column="1" Tag="2" Click="OnButtonClick">2</Button>
+                <Button Grid.Row="2" Grid.Column="2" Tag="3" Click="OnButtonClick">3</Button>
+                <Button Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="2" Tag="Clear" Classes="clear"
+                        Click="OnButtonClick">
+                    Clear
+                </Button>
 
-            <Button Grid.Row="3" Grid.Column="0" Tag="0" Click="OnButtonClick">0</Button>
-            <Button Grid.Row="3" Grid.Column="1" Tag="." Click="OnButtonClick">.</Button>
-            <Button Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="3" Tag="=" Click="OnButtonClick">=</Button>
-        </Grid>
+                <Button Grid.Row="3" Grid.Column="0" Tag="0" Click="OnButtonClick">0</Button>
+                <Button Grid.Row="3" Grid.Column="1" Tag="." Click="OnButtonClick">.</Button>
+                <Button Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="3" Tag="=" Click="OnButtonClick">=</Button>
+            </Grid>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Name="ExpressionEvaluationModePanel" Spacing="8" IsVisible="False">
+            <TextBox Width="200" Name="ExpressionText"></TextBox>
+            <Button Click="OnEvaluateExpressionClick">Evaluate</Button>
+        </StackPanel>
         <StackPanel Orientation="Horizontal">
             <TextBlock Name="Result" Width="200"></TextBlock>
-            <Slider Name="DecimalSlider" 
-                    Minimum="0" 
-                    Maximum="8" 
-                    TickFrequency="1" 
-                    IsSnapToTickEnabled="True" 
+            <Slider Name="DecimalSlider"
+                    Minimum="0"
+                    Maximum="8"
+                    TickFrequency="1"
+                    IsSnapToTickEnabled="True"
                     Width="200"
-                    Value="2"/>
+                    Value="2" />
         </StackPanel>
     </StackPanel>
 </Window>
