@@ -18,10 +18,10 @@
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
                     <Setter Property="HorizontalContentAlignment" Value="Center" />
                     <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, Menlo, DejaVu Sans Mono, monospace" />
-                    <!-- cover all operating systems fonts which represent mono -->
+                    <!-- cover all operating systems fonts that represent mono -->
                 </Style>
                 <Style Selector="Button.clear">
-                    <Setter Property="Foreground" Value="Red"/> 
+                    <Setter Property="Foreground" Value="Red" />
                 </Style>
             </Grid.Styles>
 
@@ -46,6 +46,15 @@
             <Button Grid.Row="3" Grid.Column="1" Tag="." Click="OnButtonClick">.</Button>
             <Button Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="3" Tag="=" Click="OnButtonClick">=</Button>
         </Grid>
-        <TextBlock Name="Result"></TextBlock>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Name="Result" Width="200"></TextBlock>
+            <Slider Name="DecimalSlider" 
+                    Minimum="0" 
+                    Maximum="8" 
+                    TickFrequency="1" 
+                    IsSnapToTickEnabled="True" 
+                    Width="200"
+                    Value="2"/>
+        </StackPanel>
     </StackPanel>
 </Window>

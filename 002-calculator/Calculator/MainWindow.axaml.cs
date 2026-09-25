@@ -1,3 +1,5 @@
+using System;
+using System.Globalization;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
@@ -8,11 +10,14 @@ public partial class MainWindow : Window
 
     private string _calculation = string.Empty; 
     private const string EqualKey = "=";
-    private string _result = string.Empty; 
+    private double? _result; 
+    private string? _error;
+
 
     public MainWindow()
     {
         InitializeComponent();
+        DecimalSlider.ValueChanged += (_, _) => UpdateDisplay();
     }
 
     private void OnButtonClick(object? sender, RoutedEventArgs e)
@@ -25,7 +30,8 @@ public partial class MainWindow : Window
         var input =  button.Tag.ToString();
         if (input == EqualKey)
         {
-            _result = CalculationLogic.Evaluate(_calculation);
+            var success = CalculationLogic.TryEvaluate(_calculation, out var value, out _error);
+            _result = success ? value : null;
         } else
         {
             _calculation = CalculationLogic.HandleInput(_calculation, input ?? string.Empty);
@@ -36,7 +42,10 @@ public partial class MainWindow : Window
     private void UpdateDisplay()
     {
         Calculation.Text =  _calculation;
-        Result.Text = _result;
+        Result.Text = _error ?? 
+                      // f stands for fixed-point: rounds and pads with zeros to the slider's decimal places
+                      _result?.ToString($"F{(int)DecimalSlider.Value}", CultureInfo.InvariantCulture); 
+
     }
     
     

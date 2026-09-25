@@ -60,18 +60,26 @@ public static class CalculationLogic
 
         return current[start..].Contains(DecimalSeparator);
     }
-
-    public static string Evaluate(string calculation)
+    
+    public static bool TryEvaluate(string calculation, out double result, out string? error)
     {
-        var expression = new Expression(calculation);
+        result = 0;
+        error = null;
         try
         {
+            var expression = new Expression(calculation);
             var evaluation = expression.Evaluate();
-            return Convert.ToString(evaluation, CultureInfo.InvariantCulture) ?? "";
+            result = Convert.ToDouble(evaluation, CultureInfo.InvariantCulture);
+            return true;
         }
+        
         catch (Exception ex)
         {
-            return ex.Message;
+            error = ex.Message;
+            return false;
         }
+        
+
     }
+
 }
