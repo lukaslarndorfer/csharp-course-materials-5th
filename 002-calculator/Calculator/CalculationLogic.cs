@@ -44,9 +44,14 @@ public static class CalculationLogic
         {
             return current + c; // number is always allowed
         }
-        
-        return IsOperator(last) || last == DecimalSeparator 
-            ? current[..^1]  + c // substitute operator or drop dangling separator
+
+        if (IsOperator(last))
+        {
+            return current; // ignore operator after operator
+        }
+
+        return last == DecimalSeparator
+            ? current[..^1] + c // drop dangling separator
             : current + c;
     }
     
