@@ -10,13 +10,15 @@
         <vm:DesignColorDisplayControlViewModel />
     </Design.DataContext>
     <Grid ColumnDefinitions="*" RowDefinitions="*">
-        <Rectangle Fill="{Binding Color}"
+        <Rectangle Grid.Column="0" Grid.Row="0" 
+                   Fill="{Binding Color}"
                    Stroke="Gray"
                    StrokeThickness="1"
                    VerticalAlignment="Stretch"
                    HorizontalAlignment="Stretch">
         </Rectangle>
-        <TextBlock Foreground="{Binding HexOverlayColor}"
+        <TextBlock Grid.Column="0" Grid.Row="0" 
+                   Foreground="{Binding HexOverlayColor}"
                    Text="{Binding HexOverlay}"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center">
