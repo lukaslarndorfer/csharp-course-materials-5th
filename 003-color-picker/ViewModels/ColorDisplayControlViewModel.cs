@@ -6,15 +6,24 @@ namespace ColorPicker.ViewModels;
 
 public class ColorDisplayControlViewModel(ColorData data, bool overlayHex) : ViewModelBase
 {
-    // TODO
+    private ColorData Data { get; set; } = data;
 
-    public Brush Color => throw new NotImplementedException();
-    public Brush HexOverlayColor => throw new NotImplementedException();
-    public string HexOverlay => throw new NotImplementedException();
+    private bool OverlayHex { get; } = overlayHex;
+
+    public Brush Color => new SolidColorBrush(Data.Color);
+    public Brush HexOverlayColor => new SolidColorBrush(GetContrastingColor(Data.Color));
+    public string HexOverlay => OverlayHex ? $"{Data.Hex}" : string.Empty;
 
     public void Refresh(ColorData? newData = null)
     {
-        throw new NotImplementedException();
+        if (newData is not null)
+        {
+            Data = newData;
+        }
+
+        OnPropertyChanged(nameof(Color));
+        OnPropertyChanged(nameof(HexOverlayColor));
+        OnPropertyChanged(nameof(HexOverlay));
     }
 
     private static Color GetContrastingColor(Color background)
