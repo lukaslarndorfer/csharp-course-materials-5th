@@ -8,7 +8,7 @@ public sealed class MainWindowViewModel : ViewModelBase
     {
         var colorData = ColorData.Default;
 
-        PickerViewModel = new ColorPickerControlViewModel(colorData);
+        PickerViewModel = new ColorPickerControlViewModel(colorData, new ColorDisplayControlViewModel(colorData, false));
         ComplementaryViewModel = new ComplementaryColorsControlViewModel(colorData);
     }
 
