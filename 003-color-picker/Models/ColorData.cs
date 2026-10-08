@@ -12,10 +12,10 @@ public sealed class ColorData
 
     public Color Color => new(r: Red, g: Green, b: Blue, a: Alpha);
 
-    public string Hex => $"#{Red:X2}{Green:X2}{Blue:X2}"; // X = hex
+    public string Hex => $"#{Red:X2}{Green:X2}{Blue:X2}{Alpha:X2}"; // X = hex
 
     // invariant, always use a dot as decimal separator
-    public string Rgba => FormattableString.Invariant($"rgba({Red},{Green},{Blue},{Alpha / 255.0:0.##})");
+    public string Rgba => FormattableString.Invariant($"rgba({Red}, {Green}, {Blue}, {Alpha / 255.0:0.##})");
 
     public static ColorData Default =>
         new()
