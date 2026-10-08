@@ -67,6 +67,7 @@ public partial class ColorPickerControlViewModel : ViewModelBase
         OnPropertyChanged(nameof(Hex));
         OnPropertyChanged(nameof(Rgba));
         _colorDisplayControlViewModel.Refresh();
+        Messenger.Send(new ColorDataChanged());
 
     }
 }

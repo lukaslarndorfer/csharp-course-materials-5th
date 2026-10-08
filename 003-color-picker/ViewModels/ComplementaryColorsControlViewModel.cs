@@ -14,7 +14,8 @@ public class ComplementaryColorsControlViewModel : ViewModelBase, IRecipient<Col
     {
         _colorData = colorData;
 
-        // TODO
+        // whether this view model is active
+        IsActive = true;
     }
 
     // TODO
@@ -100,6 +101,11 @@ public class ComplementaryColorsControlViewModel : ViewModelBase, IRecipient<Col
         public double Hue => hue;
         public double Saturation => saturation;
         public double Value => value;
+    }
+
+    public void Receive(ColorDataChanged message)
+    {
+        throw new NotImplementedException();
     }
 }
 
