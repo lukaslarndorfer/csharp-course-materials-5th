@@ -12,7 +12,10 @@ public sealed partial class ColorPickerControl : UserControl
 
     private void HandleTextSelection(object? sender, TappedEventArgs e)
     {
-        // TODO
+        if (sender is SelectableTextBlock stb)
+        {
+            stb.SelectAll();
+        }
     }
 }
 

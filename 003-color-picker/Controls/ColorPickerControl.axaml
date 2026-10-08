@@ -34,13 +34,15 @@
         <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Alpha}"></NumericUpDown>
         <SelectableTextBlock x:Name="HexText"
                              Grid.Row="0" Grid.Column="2"
-                             Text="{Binding Hex}" />
+                             Text="{Binding Hex}"
+                             Tapped="HandleTextSelection"/>
         <SelectableTextBlock x:Name="RgbaText"
                              Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2"
-                             Text="{Binding Rgba}">
+                             Text="{Binding Rgba}"
+                             Tapped="HandleTextSelection">
         </SelectableTextBlock>
         <Button Grid.Row="2" Grid.Column="2" Grid.RowSpan="2" Grid.ColumnSpan="2"
                 HorizontalAlignment="Center"
-                Content="Random" />
+                Content="Random"/>
     </Grid>
 </UserControl>
