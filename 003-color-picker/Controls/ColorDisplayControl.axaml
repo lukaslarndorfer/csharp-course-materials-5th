@@ -6,5 +6,21 @@
              mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="200"
              x:DataType="vm:ColorDisplayControlViewModel"
              x:Class="ColorPicker.Controls.ColorDisplayControl">
-    TODO
+    <Design.DataContext>
+        <vm:DesignColorDisplayControlViewModel />
+    </Design.DataContext>
+    <Grid ColumnDefinitions="*" RowDefinitions="*">
+        <Rectangle Fill="{Binding Color}"
+                   Stroke="Gray"
+                   StrokeThickness="1"
+                   VerticalAlignment="Stretch"
+                   HorizontalAlignment="Stretch">
+        </Rectangle>
+        <TextBlock Foreground="{Binding HexOverlayColor}"
+                   Text="{Binding HexOverlay}"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center">
+        </TextBlock>
+
+    </Grid>
 </UserControl>
