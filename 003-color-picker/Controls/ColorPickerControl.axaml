@@ -10,7 +10,7 @@
     <Design.DataContext>
         <vm:DesignColorPickerControlViewModel />
     </Design.DataContext>
-    <Grid ColumnDefinitions="2*,2*,*,*" RowDefinitions="*,*,*,*" Margin="4">
+    <Grid ColumnDefinitions="2*,2*,*,*" RowDefinitions="2*,*,*,*,*" Margin="4">
         <Grid.Styles>
             <Style Selector="NumericUpDown">
                 <Setter Property="Minimum" Value="0" />
@@ -23,6 +23,10 @@
                 <Setter Property="Margin" Value="4" />
             </Style>
         </Grid.Styles>
+        
+        <controls:ColorDisplayControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"
+                                      Margin="4"
+                                      DataContext="{Binding ColorDisplayControlViewModel}" />
         <TextBlock Grid.Row="0" Grid.Column="0" Text="R" Classes="label" />
         <TextBlock Grid.Row="1" Grid.Column="0" Text="G" Classes="label" />
         <TextBlock Grid.Row="2" Grid.Column="0" Text="B" Classes="label" />
@@ -43,6 +47,7 @@
         </SelectableTextBlock>
         <Button Grid.Row="2" Grid.Column="2" Grid.RowSpan="2" Grid.ColumnSpan="2"
                 HorizontalAlignment="Center"
-                Content="Random"/>
+                Content="Random"
+                Command="{Binding RandomColorCommand}"/>
     </Grid>
 </UserControl>

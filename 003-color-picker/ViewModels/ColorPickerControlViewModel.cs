@@ -1,4 +1,5 @@
 using System;
+using Avalonia.Media;
 using ColorPicker.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -10,7 +11,7 @@ public partial class ColorPickerControlViewModel : ViewModelBase
 {
     private readonly ColorData _colorData;
 
-    private readonly ColorDisplayControlViewModel _colorDisplayControlViewModel;
+    public ColorDisplayControlViewModel ColorDisplayControlViewModel { get; }
 
     public string Hex => _colorData.Hex;
 
@@ -31,7 +32,7 @@ public partial class ColorPickerControlViewModel : ViewModelBase
     public ColorPickerControlViewModel(ColorData colorData, ColorDisplayControlViewModel colorDisplayControlViewModel)
     {
         _colorData = colorData;
-        _colorDisplayControlViewModel = colorDisplayControlViewModel;
+        ColorDisplayControlViewModel = colorDisplayControlViewModel;
         Red = _colorData.Red;
         Green = _colorData.Green;
         Blue = _colorData.Blue;
@@ -66,9 +67,18 @@ public partial class ColorPickerControlViewModel : ViewModelBase
     {
         OnPropertyChanged(nameof(Hex));
         OnPropertyChanged(nameof(Rgba));
-        _colorDisplayControlViewModel.Refresh();
+        ColorDisplayControlViewModel.Refresh();
         Messenger.Send(new ColorDataChanged());
 
+    }
+    
+    [RelayCommand]
+    private void RandomColor()
+    {
+        Red = (byte)Random.Shared.Next(0, 256);
+        Green = (byte)Random.Shared.Next(0, 256);
+        Blue = (byte)Random.Shared.Next(0, 256);
+        Alpha = (byte)Random.Shared.Next(0, 256);
     }
 }
 
