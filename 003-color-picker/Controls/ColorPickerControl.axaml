@@ -27,25 +27,25 @@
         <controls:ColorDisplayControl Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"
                                       Margin="4"
                                       DataContext="{Binding ColorDisplayControlViewModel}" />
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="R" Classes="label" />
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="G" Classes="label" />
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="B" Classes="label" />
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="A" Classes="label" />
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="R" Classes="label" />
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="G" Classes="label" />
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="B" Classes="label" />
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="A" Classes="label" />
 
-        <NumericUpDown Grid.Row="0" Grid.Column="1" Value="{Binding Red}"></NumericUpDown>
-        <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Green}"></NumericUpDown>
-        <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Blue}"></NumericUpDown>
-        <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Alpha}"></NumericUpDown>
+        <NumericUpDown Grid.Row="1" Grid.Column="1" Value="{Binding Red}"></NumericUpDown>
+        <NumericUpDown Grid.Row="2" Grid.Column="1" Value="{Binding Green}"></NumericUpDown>
+        <NumericUpDown Grid.Row="3" Grid.Column="1" Value="{Binding Blue}"></NumericUpDown>
+        <NumericUpDown Grid.Row="4" Grid.Column="1" Value="{Binding Alpha}"></NumericUpDown>
         <SelectableTextBlock x:Name="HexText"
-                             Grid.Row="0" Grid.Column="2"
+                             Grid.Row="1" Grid.Column="2"
                              Text="{Binding Hex}"
                              Tapped="HandleTextSelection"/>
         <SelectableTextBlock x:Name="RgbaText"
-                             Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2"
+                             Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2"
                              Text="{Binding Rgba}"
                              Tapped="HandleTextSelection">
         </SelectableTextBlock>
-        <Button Grid.Row="2" Grid.Column="2" Grid.RowSpan="2" Grid.ColumnSpan="2"
+        <Button Grid.Row="3" Grid.Column="2" Grid.RowSpan="2" Grid.ColumnSpan="2"
                 HorizontalAlignment="Center"
                 Content="Random"
                 Command="{Binding RandomColorCommand}"/>
