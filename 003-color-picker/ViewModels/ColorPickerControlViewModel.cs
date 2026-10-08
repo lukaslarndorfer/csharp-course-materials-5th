@@ -8,16 +8,70 @@ namespace ColorPicker.ViewModels;
 
 public partial class ColorPickerControlViewModel : ViewModelBase
 {
-    // TODO
+    private readonly ColorData _colorData;
 
-    public ColorPickerControlViewModel(ColorData colorData)
+    private readonly ColorDisplayControlViewModel _colorDisplayControlViewModel;
+
+    public string Hex => _colorData.Hex;
+
+    public string Rgba => _colorData.Rgba;
+
+    [ObservableProperty]
+    public partial byte Red { get; set; }
+
+    [ObservableProperty]
+    public partial byte Green { get; set; }
+
+    [ObservableProperty]
+    public partial byte Blue { get; set; }
+
+    [ObservableProperty]
+    public partial byte Alpha { get; set; }
+
+    public ColorPickerControlViewModel(ColorData colorData, ColorDisplayControlViewModel colorDisplayControlViewModel)
     {
-        throw new NotImplementedException();
+        _colorData = colorData;
+        _colorDisplayControlViewModel = colorDisplayControlViewModel;
+        Red = _colorData.Red;
+        Green = _colorData.Green;
+        Blue = _colorData.Blue;
+        Alpha = _colorData.Alpha;
     }
 
-    // TODO
+    partial void OnRedChanged(byte value)
+    {
+        _colorData.Red = value;
+        UpdateColorProperties();
+    }
+
+    partial void OnGreenChanged(byte value)
+    {
+        _colorData.Green = value;
+        UpdateColorProperties();
+    }
+
+    partial void OnBlueChanged(byte value)
+    {
+        _colorData.Blue = value;
+        UpdateColorProperties();
+    }
+
+    partial void OnAlphaChanged(byte value)
+    {
+        _colorData.Alpha = value;
+        UpdateColorProperties();
+    }
+
+    private void UpdateColorProperties()
+    {
+        OnPropertyChanged(nameof(Hex));
+        OnPropertyChanged(nameof(Rgba));
+        _colorDisplayControlViewModel.Refresh();
+
+    }
 }
 
 public sealed record ColorDataChanged;
 
-public sealed class DesignColorPickerControlViewModel() : ColorPickerControlViewModel(ColorData.Default);
+public sealed class DesignColorPickerControlViewModel()
+    : ColorPickerControlViewModel(ColorData.Default, new DesignColorDisplayControlViewModel());
