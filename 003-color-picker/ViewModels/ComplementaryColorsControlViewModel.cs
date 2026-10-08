@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Avalonia.Media;
 using ColorPicker.Models;
 using CommunityToolkit.Mvvm.Messaging;
@@ -10,15 +9,22 @@ public class ComplementaryColorsControlViewModel : ViewModelBase, IRecipient<Col
 {
     private readonly ColorData _colorData;
 
+    public ColorDisplayControlViewModel Complement { get; }
+    public ColorDisplayControlViewModel SplitLeft { get; }
+    public ColorDisplayControlViewModel SplitRight { get; }
+
     public ComplementaryColorsControlViewModel(ColorData colorData)
     {
         _colorData = colorData;
-
+        
+        Complement = new ColorDisplayControlViewModel(_colorData, true);
+        SplitLeft = new ColorDisplayControlViewModel(_colorData, true);
+        SplitRight = new ColorDisplayControlViewModel(_colorData, true);
+        UpdateColors();
+        
         // whether this view model is active
         IsActive = true;
     }
-
-    // TODO
 
     private static Color[] GetSplitComplements(Color baseColor)
     {
@@ -105,7 +111,19 @@ public class ComplementaryColorsControlViewModel : ViewModelBase, IRecipient<Col
 
     public void Receive(ColorDataChanged message)
     {
-        throw new NotImplementedException();
+        UpdateColors();
+    }
+
+    private void UpdateColors()
+    {
+        Color[] splitComplements = GetSplitComplements(_colorData.Color);
+        var complementData = ColorData.FromColor(splitComplements[0]);
+        var splitLeftData = ColorData.FromColor(splitComplements[1]);
+        var splitRightData = ColorData.FromColor(splitComplements[2]);
+        
+        Complement.Refresh(complementData);
+        SplitLeft.Refresh(splitLeftData);
+        SplitRight.Refresh(splitRightData);
     }
 }
 
