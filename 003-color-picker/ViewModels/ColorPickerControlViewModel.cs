@@ -75,10 +75,13 @@ public partial class ColorPickerControlViewModel : ViewModelBase
     [RelayCommand]
     private void RandomColor()
     {
-        Red = (byte)Random.Shared.Next(0, 256);
-        Green = (byte)Random.Shared.Next(0, 256);
-        Blue = (byte)Random.Shared.Next(0, 256);
-        Alpha = (byte)Random.Shared.Next(0, 256);
+        var randomVals = new byte[4];
+        Random.Shared.NextBytes(randomVals);
+
+        Red = randomVals[0];
+        Green = randomVals[1];
+        Blue = randomVals[2];
+        Alpha = randomVals[3];
     }
 }
 
