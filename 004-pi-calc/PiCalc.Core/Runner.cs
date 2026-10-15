@@ -45,6 +45,7 @@ internal sealed class Runner(IServiceProvider services) : IRunner
     {
         RunProgressCounter? counter;
         IPiCalculation.ProgressReport? reportHandler = null;
+
         if (progressReport is not null)
         {
             counter = new RunProgressCounter(experiments, progressReport);
@@ -59,13 +60,18 @@ internal sealed class Runner(IServiceProvider services) : IRunner
         var runners = BatchRunsPerThread(experiments, threads)
                       .Select(ex => Task.Run(() =>
                       {
-                          // TODO
-                          _ = services;
-                          throw new NotImplementedException();
-                      }, cancellationToken)).ToList();
+                          var calculator = services.GetKeyedService<IPiCalculation>(vectorized ? IPiCalculation.VectorCalculation : IPiCalculation.BasicCalculation);
 
-        // TODO
-        throw new NotImplementedException();
+                          double? result = calculator?.RunMonteCarloSimulation(ex, reportHandler, experimentResultReport,
+                                                                               cancellationToken);
+
+                          return (approxPi: result  ?? 0, Count: ex);
+                      }, cancellationToken)).ToList();
+        await Task.WhenAll(runners);
+
+        double weightedResultSum = runners.Sum(r => r.Result.approxPi * r.Result.Count);
+
+        return weightedResultSum / experiments;
     }
 
     private static IEnumerable<long> BatchRunsPerThread(long experiments, int threads)
