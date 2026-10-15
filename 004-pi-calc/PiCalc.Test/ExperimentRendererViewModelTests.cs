@@ -5,8 +5,8 @@ namespace PiCalc.Test;
 
 public sealed class ExperimentRendererViewModelTests
 {
-    private const int RedColorInt = -16776961;
-    private const int BlueColorInt = -65536;
+    private const int RedColorInt = -65536;
+    private const int BlueColorInt = -16776961;
     private readonly ExperimentRendererViewModel _sut = new();
 
     [Fact]
@@ -51,7 +51,7 @@ public sealed class ExperimentRendererViewModelTests
 
         dots.Should().NotBeEmpty()
             .And.HaveCount(1);
-        ValidateBitmapDot(0.123F, 0.201F, RedColorInt, dots.First());
+        ValidateBitmapDot(0.123F, 0.201F, BlueColorInt, dots.First());
     }
 
     [Fact]
@@ -71,10 +71,10 @@ public sealed class ExperimentRendererViewModelTests
 
         dots.Should().NotBeEmpty()
             .And.HaveCount(2);
-        var firstDot = dots.First(d => d.Color == BlueColorInt);
-        var secondDot = dots.First(d => d.Color == RedColorInt);
-        ValidateBitmapDot((float) X1, (float) Y1, BlueColorInt, firstDot);
-        ValidateBitmapDot(0.253F, 0.757F, RedColorInt, secondDot);
+        var firstDot = dots.First(d => d.Color == RedColorInt);
+        var secondDot = dots.First(d => d.Color == BlueColorInt);
+        ValidateBitmapDot((float) X1, (float) Y1, RedColorInt, firstDot);
+        ValidateBitmapDot(0.253F, 0.757F, BlueColorInt, secondDot);
     }
 
     [Theory]
