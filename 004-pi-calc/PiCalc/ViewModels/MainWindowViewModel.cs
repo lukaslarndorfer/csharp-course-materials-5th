@@ -50,7 +50,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ExperimentsLabel))]
     public partial long ExperimentsToRun { get; set; } = 100_000L;
-    
+
     [ObservableProperty]
     public partial double ProgressValue { get; set; }
 
@@ -60,13 +60,14 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     [ObservableProperty]
     public partial string ElapsedTimeText { get; set; } = string.Empty;
 
+    private bool CanStartCalculation() => !IsRunning;
+    private bool CanStopCalculation() => IsRunning;
+
     // triggers cancellation and creates tokens
     private CancellationTokenSource? _cts;
 
     public string ThreadsLabel => $"Using {Threads} {Pluralize("thread", Threads)}";
     public string ExperimentsLabel => $"Running {ExperimentsToRun} {Pluralize("experiment", ExperimentsToRun)}";
-
-
 
     /// <summary>
     ///     Creates a new instance of the <see cref="MainWindowViewModel" /> class
@@ -89,6 +90,57 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     public void Dispose()
     {
         _cts?.Dispose();
+    }
+
+    private void OnProgressReported(long processed, long total)
+    {
+        double progress = (double) processed / total;
+
+        Dispatcher.UIThread.Post(() => ProgressValue = progress);
+    }
+
+    private void OnResultRendered(double[] x, double[] y, bool[] inside) { }
+
+    [RelayCommand(CanExecute = nameof(CanStartCalculation))]
+    private async Task StartCalculationAsync()
+    {
+        if (_cts is not null)
+        {
+            await _cts.CancelAsync();
+            _cts.Dispose();
+        }
+
+        _cts = new CancellationTokenSource();
+        IsRunning = true;
+        StartCalculationCommand.NotifyCanExecuteChanged();
+        StopCalculationCommand.NotifyCanExecuteChanged();
+        try
+        {
+            var result = await Task.Run(() => _runner.RunSimulation(Threads,
+                                                                    ExperimentsToRun,
+                                                                    IsVectorized,
+                                                                    IsProgressReportingEnabled
+                                                                        ? OnProgressReported
+                                                                        : null,
+                                                                    IsResultRenderingEnabled ? OnResultRendered : null,
+                                                                    _cts.Token));
+        }
+        catch (OperationCanceledException)
+        {
+            // token triggered
+        }
+        finally
+        {
+            IsRunning = false;
+            StartCalculationCommand.NotifyCanExecuteChanged();
+            StopCalculationCommand.NotifyCanExecuteChanged();
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanStopCalculation))]
+    private async Task StopCalculationAsync()
+    {
+        _cts?.Cancel();
     }
 }
 
