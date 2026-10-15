@@ -20,7 +20,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
 {
     // TODO
     [ObservableProperty]
-    private ExperimentRendererViewModel? _experimentRendererViewModel;
+    public partial ExperimentRendererViewModel ExperimentRendererViewModel { get; set; }
 
     private IClock _clock;
     private IRunner _runner;
@@ -81,6 +81,9 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         _clock = clock;
         MaxThreads = Environment.ProcessorCount;
         Threads = MinThreads;
+
+        // for dot rendering
+        ExperimentRendererViewModel = new ExperimentRendererViewModel();
     }
 
     // TODO
@@ -99,11 +102,20 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         Dispatcher.UIThread.Post(() => ProgressValue = progress);
     }
 
-    private void OnResultRendered(double[] x, double[] y, bool[] inside) { }
+    private void OnResultRendered(double[] x, double[] y, bool[] inside)
+    {
+        for (var i = 0; i < x.Length; i++)
+        {
+            ExperimentRendererViewModel.AddExperimentResult(x[i], y[i], inside[i]);
+        }
+
+        Dispatcher.UIThread.Post(() => ExperimentRendererViewModel.RenderResults());
+    }
 
     [RelayCommand(CanExecute = nameof(CanStartCalculation))]
     private async Task StartCalculationAsync()
     {
+        ExperimentRendererViewModel.Clear();
         if (_cts is not null)
         {
             await _cts.CancelAsync();
@@ -116,14 +128,20 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         StopCalculationCommand.NotifyCanExecuteChanged();
         try
         {
-            var result = await Task.Run(() => _runner.RunSimulation(Threads,
-                                                                    ExperimentsToRun,
-                                                                    IsVectorized,
-                                                                    IsProgressReportingEnabled
-                                                                        ? OnProgressReported
-                                                                        : null,
-                                                                    IsResultRenderingEnabled ? OnResultRendered : null,
-                                                                    _cts.Token));
+            var start = _clock.GetCurrentInstant();
+            double result = await Task.Run(async () => await _runner.RunSimulation(Threads,
+                                                ExperimentsToRun,
+                                                IsVectorized,
+                                                IsProgressReportingEnabled
+                                                    ? OnProgressReported
+                                                    : null,
+                                                IsResultRenderingEnabled ? OnResultRendered : null,
+                                                _cts.Token));
+            var end = _clock.GetCurrentInstant();
+            var elapsed = end.Minus(start);
+            var pattern = DurationPattern.CreateWithInvariantCulture("HH:mm:ss.FFF");
+            ElapsedTimeText = pattern.Format(elapsed);
+            ResultText = result.ToString("F6", CultureInfo.InvariantCulture);
         }
         catch (OperationCanceledException)
         {
@@ -138,7 +156,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     }
 
     [RelayCommand(CanExecute = nameof(CanStopCalculation))]
-    private async Task StopCalculationAsync()
+    private void StopCalculation()
     {
         _cts?.Cancel();
     }
