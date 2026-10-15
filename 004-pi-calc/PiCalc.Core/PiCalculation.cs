@@ -65,7 +65,11 @@ internal sealed class PiCalculation(IRandomProvider random) : IPiCalculation
             progressReport(delta);
             lastReportedRuns = i;
         }
-
+        if (progressReport is not null && experiments > lastReportedRuns)
+        {
+            progressReport(experiments - lastReportedRuns);
+        }
+        
         return (double) insideCircle / experiments * 4D;
     }
 }
@@ -134,7 +138,11 @@ internal sealed class PiCalculationSIMD(IRandomProvider random) : IPiCalculation
             experimentResultReport?.Invoke([x], [y], [isInside]);
             // not reporting progress for the last <8 runs
         }
-
+        if (progressReport is not null && experiments > lastReportedRuns)
+        {
+            progressReport(experiments - lastReportedRuns);
+        }
+        
         return (double) insideCircle / experiments * 4D;
     }
 }
