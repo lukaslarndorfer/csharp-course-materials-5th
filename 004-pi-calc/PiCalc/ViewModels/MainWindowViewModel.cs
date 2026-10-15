@@ -18,12 +18,11 @@ namespace PiCalc.ViewModels;
 /// </summary>
 public partial class MainWindowViewModel : ViewModelBase, IDisposable
 {
-    // TODO
     [ObservableProperty]
     public partial ExperimentRendererViewModel ExperimentRendererViewModel { get; set; }
 
-    private IClock _clock;
-    private IRunner _runner;
+    private readonly IClock _clock;
+    private readonly IRunner _runner;
 
     [ObservableProperty]
     public partial bool IsVectorized { get; set; } = false;
@@ -55,7 +54,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     public partial double ProgressValue { get; set; }
 
     [ObservableProperty]
-    public partial string ResultText { get; set; } = string.Empty;
+    public partial string ResultValue { get; set; } = string.Empty;
 
     [ObservableProperty]
     public partial string ElapsedTimeText { get; set; } = string.Empty;
@@ -76,7 +75,6 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     /// <param name="clock">Clock instance for timing</param>
     public MainWindowViewModel(IRunner runner, IClock clock)
     {
-        // TODO
         _runner = runner;
         _clock = clock;
         MaxThreads = Environment.ProcessorCount;
@@ -85,8 +83,6 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
         // for dot rendering
         ExperimentRendererViewModel = new ExperimentRendererViewModel();
     }
-
-    // TODO
 
     private static string Pluralize<T>(string noun, T count) where T : INumber<T> => count == T.One ? noun : $"{noun}s";
 
@@ -99,7 +95,7 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     {
         double progress = (double) processed / total;
 
-        Dispatcher.UIThread.Post(() => ProgressValue = progress);
+        Dispatcher.UIThread.Invoke(() => ProgressValue = progress);
     }
 
     private void OnResultRendered(double[] x, double[] y, bool[] inside)
@@ -109,12 +105,14 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
             ExperimentRendererViewModel.AddExperimentResult(x[i], y[i], inside[i]);
         }
 
-        Dispatcher.UIThread.Post(() => ExperimentRendererViewModel.RenderResults());
     }
 
     [RelayCommand(CanExecute = nameof(CanStartCalculation))]
     private async Task StartCalculationAsync()
     {
+        ResultValue = string.Empty;
+        ProgressValue = 0D;
+        ElapsedTimeText = string.Empty;
         ExperimentRendererViewModel.Clear();
         if (_cts is not null)
         {
@@ -137,11 +135,16 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
                                                     : null,
                                                 IsResultRenderingEnabled ? OnResultRendered : null,
                                                 _cts.Token));
+            if (IsResultRenderingEnabled)
+            {
+                RenderResultsOnUiThread();
+            }
+
             var end = _clock.GetCurrentInstant();
             var elapsed = end.Minus(start);
             var pattern = DurationPattern.CreateWithInvariantCulture("HH:mm:ss.FFF");
             ElapsedTimeText = pattern.Format(elapsed);
-            ResultText = result.ToString("F6", CultureInfo.InvariantCulture);
+            ResultValue = result.ToString(CultureInfo.InvariantCulture);
         }
         catch (OperationCanceledException)
         {
@@ -159,6 +162,19 @@ public partial class MainWindowViewModel : ViewModelBase, IDisposable
     private void StopCalculation()
     {
         _cts?.Cancel();
+    }
+
+    private void RenderResultsOnUiThread() =>
+        Dispatcher.UIThread.Invoke(() => ExperimentRendererViewModel.RenderResults());
+
+    partial void OnExperimentsToRunChanged(long value)
+    {
+        const long minExperiments = 1L;
+
+        if (value < minExperiments)
+        {
+            ExperimentsToRun = minExperiments;
+        }
     }
 }
 
