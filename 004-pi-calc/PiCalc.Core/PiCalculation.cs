@@ -35,9 +35,38 @@ internal sealed class PiCalculation(IRandomProvider random) : IPiCalculation
                                           IRunner.ExperimentResultReport? experimentResultReport,
                                           CancellationToken cancellationToken)
     {
-        // TODO
-        _ = random;
-        throw new NotImplementedException("Basic Monte Carlo simulation is not implemented yet.");
+        long progressInterval = progressReport is null
+            ? 0
+            : experiments / Math.Min(experiments, IPiCalculation.ProgressUpdates);
+
+        var lastReportedRuns = 0L;
+        long insideCircle = 0;
+
+        for (var i = 0; i < experiments && !cancellationToken.IsCancellationRequested; i++)
+        {
+            var isInsideCircle = false;
+            var coordinates = random.NextDoublePair();
+
+            if (coordinates.X * coordinates.X + coordinates.Y * coordinates.Y <= 1.0)
+            {
+                isInsideCircle = true;
+                insideCircle++;
+            }
+
+            experimentResultReport?.Invoke([coordinates.X], [coordinates.Y], [isInsideCircle]);
+
+            long delta = i - lastReportedRuns;
+            if (progressReport is null ||
+                delta < progressInterval)
+            {
+                continue;
+            }
+
+            progressReport(delta);
+            lastReportedRuns = i;
+        }
+
+        return (double) insideCircle / experiments * 4D;
     }
 }
 
