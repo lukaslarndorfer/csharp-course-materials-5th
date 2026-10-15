@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="PiCalc.Test"/>
+        <InternalsVisibleTo Include="DynamicProxyGenAssembly2"/>
+        <PackageReference Include="HTLLeonding.Utility.LeoAnalyzers" Version="1.1.2"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.10" />
+        <PackageReference Include="NodaTime" Version="3.3.3" />
+    </ItemGroup>
+
+</Project>

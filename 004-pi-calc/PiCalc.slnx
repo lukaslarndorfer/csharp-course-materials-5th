@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="PiCalc.Core/PiCalc.Core.csproj" />
+  <Project Path="PiCalc.Test/PiCalc.Test.csproj" />
+  <Project Path="PiCalc/PiCalc.csproj" />
+</Solution>
