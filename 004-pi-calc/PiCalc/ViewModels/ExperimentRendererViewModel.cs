@@ -67,8 +67,6 @@ public partial class ExperimentRendererViewModel : ViewModelBase
         var c = isInsideCircle ? Colors.Red : Colors.Blue;
         var colorInt = (c.A << 24) | (c.R << 16) | (c.G << 8) | c.B;
 
-        // TODO
-
         var roundedX = (float) Math.Round(x, 3);
         var roundedY = (float) Math.Round(y, 3);
         _dotsBuffer[(roundedX, roundedY)] = colorInt;
