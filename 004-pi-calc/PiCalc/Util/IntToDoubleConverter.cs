@@ -18,9 +18,15 @@ internal sealed class IntToDoubleConverter : IValueConverter
     /// <param name="parameter">Unused</param>
     /// <param name="culture">Unused</param>
     /// <returns>The converted or a fallback value </returns>
-    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture) =>
-        // TODO
-        throw new NotImplementedException();
+    public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is int intValue)
+        {
+            return (double) intValue;
+        }
+
+        return 0D;
+    }
 
     /// <summary>
     ///     Converts a <see cref="double" /> back to an <see cref="int" />.
@@ -31,7 +37,13 @@ internal sealed class IntToDoubleConverter : IValueConverter
     /// <param name="parameter">Unused</param>
     /// <param name="culture">Unused</param>
     /// <returns>The converted or a fallback value </returns>
-    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture) =>
-        // TODO
-        throw new NotImplementedException();
+    public object ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
+    {
+        if (value is double doubleValue)
+        {
+            return (int) doubleValue;
+        }
+
+        return 0;
+    }
 }
