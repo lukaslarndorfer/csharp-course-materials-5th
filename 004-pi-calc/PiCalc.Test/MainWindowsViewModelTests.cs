@@ -51,7 +51,12 @@ public sealed class MainWindowsViewModelTests
         resultTrigger = result => tcs.SetResult(result);
 
         var mock = Substitute.For<IRunner>();
-        mock.RunSimulation(Arg.Any<int>(), Arg.Any<long>(), Arg.Any<bool>(), null, null, Arg.Any<CancellationToken>())
+        mock.RunSimulation(Arg.Any<int>(),
+                           Arg.Any<long>(),
+                           Arg.Any<bool>(),
+                           Arg.Any<IRunner.ProgressReport?>(),
+                           Arg.Any<IRunner.ExperimentResultReport?>(),
+                           Arg.Any<CancellationToken>())
             .Returns(new ValueTask<double>(tcs.Task));
 
         return mock;
