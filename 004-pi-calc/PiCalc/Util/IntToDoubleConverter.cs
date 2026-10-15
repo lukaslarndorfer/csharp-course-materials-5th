@@ -41,7 +41,7 @@ internal sealed class IntToDoubleConverter : IValueConverter
     {
         if (value is double doubleValue)
         {
-            return (int) doubleValue;
+            return (int) Math.Round(doubleValue);
         }
 
         return 0;
