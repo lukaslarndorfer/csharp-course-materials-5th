@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace PiCalc.ViewModels;
@@ -13,14 +14,14 @@ namespace PiCalc.ViewModels;
 /// </summary>
 public partial class ExperimentRendererViewModel : ViewModelBase
 {
-    // TODO
+    private readonly ConcurrentDictionary<(float X, float Y), int> _dotsBuffer = new();
 
     /// <summary>
     ///     Creates a new instance of the <see cref="ExperimentRendererViewModel" /> class
     /// </summary>
     public ExperimentRendererViewModel()
     {
-        // TODO
+        RenderDots = [];
     }
 
     /// <summary>
@@ -35,7 +36,8 @@ public partial class ExperimentRendererViewModel : ViewModelBase
     [MemberNotNull(nameof(RenderDots))]
     public void Clear()
     {
-        // TODO
+        _dotsBuffer.Clear();
+        RenderDots = [];
     }
 
     /// <summary>
@@ -44,7 +46,8 @@ public partial class ExperimentRendererViewModel : ViewModelBase
     /// </summary>
     public void RenderResults()
     {
-        // TODO
+        RenderDots = new List<BitmapDot>(_dotsBuffer
+                                             .Select(d => new BitmapDot(d.Key.X, d.Key.Y, d.Value)));
     }
 
     /// <summary>
@@ -65,6 +68,10 @@ public partial class ExperimentRendererViewModel : ViewModelBase
         var colorInt = (c.A << 24) | (c.R << 16) | (c.G << 8) | c.B;
 
         // TODO
+
+        var roundedX = (float) Math.Round(x, 3);
+        var roundedY = (float) Math.Round(y, 3);
+        _dotsBuffer[(roundedX, roundedY)] = colorInt;
     }
 
     /// <summary>
@@ -78,4 +85,4 @@ public partial class ExperimentRendererViewModel : ViewModelBase
     public readonly record struct BitmapDot(float X, float Y, int Color);
 }
 
-public sealed class DesignExperimentRendererViewModel : ExperimentRendererViewModel;
+public sealed class DesignExperimentRendererViewModel() : ExperimentRendererViewModel();
