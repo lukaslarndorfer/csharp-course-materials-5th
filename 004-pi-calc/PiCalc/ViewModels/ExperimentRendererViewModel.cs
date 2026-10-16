@@ -21,7 +21,7 @@ public partial class ExperimentRendererViewModel : ViewModelBase
     /// </summary>
     public ExperimentRendererViewModel()
     {
-        RenderDots = [];
+        Clear();
     }
 
     /// <summary>
@@ -46,8 +46,11 @@ public partial class ExperimentRendererViewModel : ViewModelBase
     /// </summary>
     public void RenderResults()
     {
-        RenderDots = new List<BitmapDot>(_dotsBuffer
-                                             .Select(d => new BitmapDot(d.Key.X, d.Key.Y, d.Value)));
+        RenderDots = (List<BitmapDot>)
+        [
+            .. _dotsBuffer
+                .Select(d => new BitmapDot(d.Key.X, d.Key.Y, d.Value))
+        ];
     }
 
     /// <summary>
