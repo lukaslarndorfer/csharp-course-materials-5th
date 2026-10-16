@@ -1,0 +1,56 @@
+<util:ScopedControl xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:util="clr-namespace:PuppyAdoption.Util"
+                    xmlns:vm="clr-namespace:PuppyAdoption.ViewModels"
+                    mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="750"
+                    x:DataType="vm:PuppyDetailsViewModel"
+                    x:Class="PuppyAdoption.Views.PuppyDetails">
+    <UserControl.Styles>
+        <StyleInclude Source="avares://PuppyAdoption/Styles/DetailTable.axaml" />
+    </UserControl.Styles>
+    <UserControl.Resources>
+        <util:LocalDateStringConverter x:Key="LocalDateConverter" />
+    </UserControl.Resources>
+    <Design.DataContext>
+        <vm:DesignPuppyDetailsViewModel />
+    </Design.DataContext>
+    <DockPanel>
+        <ProgressBar DockPanel.Dock="Top" Margin="60,20" IsVisible="{Binding ShowProgressBar}"
+                     IsIndeterminate="True" />
+        <Grid ColumnDefinitions="2*,3*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,*" Margin="20"
+              Classes="DetailTable" ColumnSpacing="20" RowSpacing="5" DockPanel.Dock="Top"
+              IsVisible="{Binding ShowDetails}">
+            <TextBlock Grid.Column="0" Grid.Row="0">Name</TextBlock>
+            <TextBlock Grid.Column="1" Grid.Row="0" Text="{Binding Name}" />
+
+            <TextBlock Grid.Column="0" Grid.Row="1">Breed</TextBlock>
+            <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Breed}" />
+
+            <TextBlock Grid.Column="0" Grid.Row="2">Date of Birth</TextBlock>
+            <TextBlock Grid.Column="1" Grid.Row="2"
+                       Text="{Binding DateOfBirth, Converter={StaticResource LocalDateConverter}}" />
+
+            <TextBlock Grid.Column="0" Grid.Row="3">Admission Date</TextBlock>
+            <TextBlock Grid.Column="1" Grid.Row="3"
+                       Text="{Binding DateArrived, Converter={StaticResource LocalDateConverter}}" />
+
+            <TextBlock Grid.Column="0" Grid.Row="4">Adoption Info</TextBlock>
+            <TextBlock Grid.Column="1" Grid.Row="4" Text="{Binding AdoptionInfo}" />
+
+            <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal"
+                        HorizontalAlignment="Center">
+                <Button Command="{Binding AdoptPuppyCommand}">Adopt</Button>
+                <Button Classes="danger" Command="{Binding DeletePuppyCommand}">Delete</Button>
+            </StackPanel>
+
+            <Border Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2"
+                    MaxWidth="{Binding MaxImageSize}"
+                    MaxHeight="{Binding MaxImageSize}"
+                    Margin="0,40">
+                <Image Source="{Binding Image}" Stretch="Uniform" />
+            </Border>
+        </Grid>
+    </DockPanel>
+</util:ScopedControl>

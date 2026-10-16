@@ -1,0 +1,19 @@
+<util:ScopedControl xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:util="clr-namespace:PuppyAdoption.Util"
+                    xmlns:vm="clr-namespace:PuppyAdoption.ViewModels"
+                    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                    x:DataType="vm:PuppyListViewModel"
+                    x:Class="PuppyAdoption.Views.PuppyList">
+    <Control.Styles>
+        <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
+    </Control.Styles>
+    <Design.DataContext>
+        <vm:DesignPuppyListViewModel />
+    </Design.DataContext>
+    <DockPanel Margin="5" LastChildFill="True">
+        <!-- TODO -->
+    </DockPanel>
+</util:ScopedControl>

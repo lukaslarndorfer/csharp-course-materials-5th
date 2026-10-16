@@ -1,0 +1,14 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Grid.DetailTable > TextBlock">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="16" />
+    </Style>
+    <Style Selector="Grid.DetailTable > TextBlock[(Grid.Column)=0]">
+        <Setter Property="FontWeight" Value="Bold" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+    </Style>
+    <Style Selector="Grid.DetailTable > TextBlock[(Grid.Column)=1]">
+        <Setter Property="HorizontalAlignment" Value="Left" />
+    </Style>
+</Styles>

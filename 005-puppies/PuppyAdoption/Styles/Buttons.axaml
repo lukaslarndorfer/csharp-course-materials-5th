@@ -1,0 +1,27 @@
+<!-- Mostly just for demo purposes, not used a lot in the application -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Button.primary">
+        <Setter Property="Background" Value="{StaticResource PrimaryBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource SurfaceBrush}" />
+
+        <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HighlightBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource SurfaceAltBrush}" />
+        </Style>
+    </Style>
+
+    <Style Selector="Button.secondary">
+        <Setter Property="Background" Value="{StaticResource SecondaryBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource SurfaceBrush}" />
+
+        <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HighlightBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource SurfaceAltBrush}" />
+        </Style>
+    </Style>
+
+    <Style Selector="Button.danger">
+        <Setter Property="Foreground" Value="{StaticResource ErrorBrush}" />
+    </Style>
+</Styles>

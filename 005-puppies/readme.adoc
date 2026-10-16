@@ -1,0 +1,368 @@
+:sectnums:
+:nofooter:
+:toc: left
+:icons: font
+:data-uri:
+:source-highlighter: highlightjs
+
+= Ava.04 -- 🐶 Adoption Agency
+
+You are going to build an application which allows an animal welfare organization to manage the admission and later adoption of puppies in multiple shelters.
+See the <<sec:requirements,requirements>> sections for details.
+
+In this assignment we will focus on two new aspects of desktop applications:
+
+. Styling
+. Directly accessing a database
+
+== Styling
+
+Avalonia allows for https://docs.avaloniaui.net/docs/basics/user-interface/styling/styles[several ways to style] your application.
+
+. https://docs.avaloniaui.net/docs/basics/user-interface/styling/control-themes[WPF-like styles]
+. CSS-like styles with classes
+. Theme definitions which apply an overall look and feel to your application
+
+We will focus primarily on the latter two, since they are a little saner.
+
+NOTE: For the screenshots/sample run video I will apply only a theme and a changed font to keep it consistent.
+You are, however, free to experiment with other styling techniques and the overall look -- let's see who creates the most beautiful application!
+
+=== Resource Dictionaries
+
+Resource dictionaries allow you to define static resources which can then be reused throughout your application.
+
+.Colors.axaml
+[source,xaml]
+----
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="PrimaryColor">#64B5F6</Color>
+    <Color x:Key="SecondaryColor">#F6A564</Color>
+    <Color x:Key="SurfaceColor">#FFFFFF</Color>
+    <Color x:Key="SurfaceColorAlt">#000000</Color>
+    <Color x:Key="HighlightColor">#C7E5F9</Color>
+    <Color x:Key="ErrorColor">#EF5350</Color>
+    <Color x:Key="SuccessColor">#66BB6A</Color>
+
+    <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
+    <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource SecondaryColor}"/>
+    <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
+    <SolidColorBrush x:Key="SurfaceAltBrush" Color="{StaticResource SurfaceColorAlt}"/>
+    <SolidColorBrush x:Key="HighlightBrush" Color="{StaticResource HighlightColor}"/>
+    <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource ErrorColor}"/>
+    <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
+</ResourceDictionary>
+----
+
+In this case several colors are defined and then brushes for them, which are needed to actually use them in the UI.
+To make those resources available to the whole application, you need to include them in the `App.axaml` file:
+
+.App.axaml
+[source,xaml]
+----
+<Application.Resources>
+    <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceInclude Source="avares://PuppyAdoption/Styles/Colors.axaml"/>
+        </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+</Application.Resources>
+----
+
+=== CSS-like Styles
+
+Inspired by CSS in the browser, you can define classes and apply one or more of them to a control.
+Additionally, there are https://docs.avaloniaui.net/docs/reference/styles/pseudo-classes[pseudo-classes] like `pressed`, which work like in CSS as well.
+
+.Buttons.axaml
+[source,xaml]
+----
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="Button.primary"> <1>
+        <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/> <2>
+        <Setter Property="Foreground" Value="{StaticResource SurfaceBrush}"/> <3>
+
+        <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter"> <4><5>
+            <Setter Property="Background" Value="{StaticResource HighlightBrush}"/> <6>
+            <Setter Property="Foreground" Value="{StaticResource SurfaceAltBrush}"/> <6>
+        </Style>
+    </Style>
+
+    <Style Selector="Button.secondary"> <7>
+        <Setter Property="Background" Value="{StaticResource SecondaryBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource SurfaceBrush}"/>
+
+        <Style Selector="^:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource HighlightBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource SurfaceAltBrush}"/>
+        </Style>
+    </Style>
+
+    <Style Selector="Button.danger">
+        <Setter Property="Foreground" Value="{StaticResource ErrorBrush}" />
+    </Style>
+</Styles>
+----
+<1> Defines a class `primary`, which can be applied to a `Button` control
+<2> Sets the background color of the button to the primary color defined in the `Colors.axaml` resource dictionary
+<3> Sets the foreground color of the button to the surface color defined in the `Colors.axaml` resource dictionary
+<4> Defines a pseudo-class for when the button is hovered over -- `^` _repeats_ the outer selector, `Button.primary` in this case
+<5> Because the theme adjusts not the button, but its content when hovering over it, we need to also target that, otherwise our changes would be overruled by the higher priority of the content style.
+With `/template/` the content presentation template is accessed and then within that the `ContentPresenter` control is targeted -- you may treat these as 'magic variables' 😉
+<6> Setting the background and foreground colors of the content presenter when the button is hovered over
+<7> Defines a similar class `secondary` for buttons, which uses the secondary color instead of the primary one
+
+To make those styles available to the whole application, you need to include them in the `App.axaml` file as well:
+
+.App.axaml
+[source,xaml]
+----
+<Application.Styles>
+    <FluentTheme/>
+    <StyleInclude Source="avares://PuppyAdoption/Styles/Buttons.axaml"/>
+</Application.Styles>
+----
+
+Alternatively, you can include them in each `Window` or `UserControl` where you want to use them.
+
+WARNING:  You will be fighting the theme all the time, which will often take precedence over your styles -- in complex ways where it targets a `Border` element within which has higher priority etc.
+So if you really want to do a very custom styling, it might be a good idea to not use a theme at all, but instead define all component styles yourself.
+
+The CSS-like style is then applied using the `Classes` property of the control:
+
+.MainWindow.axaml
+[source,xaml]
+----
+<Button Classes="primary">+</Button>
+----
+
+=== Themes
+
+A good way to customize the overall look and feel of your application is to use a theme.
+For this, we have two levels of complexity:
+
+. Using the built-in fluent theme, but adjusting some colors
+** Similar to what we did with Angular Material
+. Creating a custom theme from scratch
+
+Due to the unintuitive nature and complexity of doing a whole XAML theme, we will stick to the first option.
+If you ever need to create a fully custom branded application, you'll have to get a designer on board and invest some serious time anyway.
+
+A nice way to adjust the existing fluent theme -- which by default already has light & dark modes, adjusted to the OS theme automatically -- is to use the https://theme.xaml.live/[`FluentEditor` tool].
+It allows you to quickly set a color palette to your liking and then generates the necessary XAML code for you.
+There are also some pre-defined theme variants available, which you can use as a starting point.
+
+.App.axaml
+[source,xaml]
+----
+<FluentTheme>
+    <FluentTheme.Palettes>
+        <ColorPaletteResources x:Key="Light" Accent="#ff8961cc" AltHigh="White" AltLow="White" AltMedium="White" AltMediumHigh="White" AltMediumLow="White" BaseHigh="Black" BaseLow="#ffeeceff" BaseMedium="#ffa987bc" BaseMediumHigh="#ff7b5890" BaseMediumLow="#ff9270a6" ChromeAltLow="#ff7b5890" ChromeBlackHigh="Black" ChromeBlackLow="#ffeeceff" ChromeBlackMedium="#ff7b5890" ChromeBlackMediumLow="#ffa987bc" ChromeDisabledHigh="#ffeeceff" ChromeDisabledLow="#ffa987bc" ChromeGray="#ff9270a6" ChromeHigh="#ffeeceff" ChromeLow="#fffeeaff" ChromeMedium="#fffbe4ff" ChromeMediumLow="#fffeeaff" ChromeWhite="White" ListLow="#fffbe4ff" ListMedium="#ffeeceff" RegionColor="#fffef6ff" />
+        <ColorPaletteResources x:Key="Dark" Accent="#ff8961cc" AltHigh="Black" AltLow="Black" AltMedium="Black" AltMediumHigh="Black" AltMediumLow="Black" BaseHigh="White" BaseLow="#ff64576b" BaseMedium="#ffb6aabc" BaseMediumHigh="#ffcbbfd0" BaseMediumLow="#ff8d8193" ChromeAltLow="#ffcbbfd0" ChromeBlackHigh="Black" ChromeBlackLow="#ffcbbfd0" ChromeBlackMedium="Black" ChromeBlackMediumLow="Black" ChromeDisabledHigh="#ff64576b" ChromeDisabledLow="#ffb6aabc" ChromeGray="#ffa295a8" ChromeHigh="#ffa295a8" ChromeLow="#ff332041" ChromeMedium="#ff3f2e4b" ChromeMediumLow="#ff584960" ChromeWhite="White" ListLow="#ff3f2e4b" ListMedium="#ff64576b" RegionColor="#ff262738" />
+    </FluentTheme.Palettes>
+</FluentTheme>
+----
+
+TIP: Some OS allow for a system-wide accent color to be set and, by default (= if _not_ overridden), Avalonia will respect and use that color, which helps to integrate your application into the OS look and feel the user prefers.
+
+=== Changing the Font
+
+A comparatively simple way to adjust the look is to change the font.
+I have already provided the font files for `Rubik`, which has a sufficiently permissive license, in the `Assets/Fonts` folder.
+How to apply it to _the whole_ application, I leave as *an exercise* for you.
+Do some research and figure it out.
+You are _allowed_ to use a different font!
+
+TIP: `Selector=":is(TopLevel)"` could be helpful
+
+== Database Access & General Architecture
+
+While _in general_ accessing a database _directly_ from a desktop application, without an API in between, is a *bad idea*, many companies still have such setups to save cost (in the short term) by not having to implement an API at all.
+Thus, we will do this _once_ as well.
+
+Yet the infrastructure we need for this, will be mostly the same we need for a proper architecture -- especially dependency injection.
+Later the services will perform calls to the backend instead of directly querying the database, but the rest will stay mostly the same (basically, the `Persistence` project would move to the backend).
+
+Using _hosting_ of the .NET platform makes everything look and work very similar to ASP.NET Core, which you are already familiar with.
+It provides things like processing of configuration & environment variables, logging and dependency injection.
+I have prepared the infrastructure, but make sure you understand how things work together.
+However, there are two noteworthy differences:
+
+. No automatic environment handling (e.g. using the `.Development.json` config file(s))
+** I solved this by using a preprocessor directive in the `Program.cs` file, which will set the environment to `Development` when running in debug mode
+. The initial creation of a view model has to use the _service locator_ pattern
+** Since there is no 'request' for which the framework could initiate the IoC chain for us, we have to do it manually
+** Take a look at the `static T CreateViewModel<T>() where T : ViewModelBase` method I added in `App.axaml.cs`.
+This will resolve the view model with its dependencies and then transitively all of their dependencies as well, so, except of having to call this method when requiring a view model, everything else then works as expected.
+
+=== Lifetimes
+
+It _usually_ does _not_ make sense to have _scoped_ services in a desktop application -- there are no requests or similar, independent tasks.
+Typically, you will only have singletons and transient services.
+
+*But*, because we are accessing the database directly, we face an additional problem: a `DbContext` can only be used for a _single_ request at once.
+So if a user clicks a button while another query is still running, the application would crash.
+To mitigate this, we will use one `DbContext` instance for each view model and then make sure to disable all interaction within that view model while a query is running.
+
+One problem solved we face another: with _multiple_, long-lived (= as long as the view model exists) context instances, their *caches will start to diverge* and entities even loaded as tracking in one context will not be available in another => we always _have to keep that in mind and work around it_!
+
+TIP: I left some code comments and will alert you in the instructions whenever we run into an issue caused by the multiple contexts
+
+==== Disposing View Models
+
+Because we have to use individual scopes for each view model, we also have to make sure those scopes are disposed of properly.
+To automate this process, I created `ScopedWindow` & `ScopedControl` base class for our _views_ which automatically register an event handler that calls `DisposeAsync` on the view model, if the window is closed or the control is unloaded.
+
+That is only necessary here, because we have the direct database access.
+It would also be necessary with an API if you still need scoped view models for some other reason, but that should be very rare.
+
+=== Design Facades
+
+Our view models are now able to declare dependencies and the DI container will provide them automatically.
+Great!
+Except... now the previewer in the IDE no longer works, because it _requires_ parameterless constructors to instantiate the view model 🙁
+
+I solved this issue, by creating _design_ implementations of all view models which inherit the real view model, but supply _dummy_ implementations of the dependency interfaces.
+Those dummy implementations I have grouped in the `DesignFacades` class.
+
+=== Utilities
+
+I have prepared a couple of utility classes to make your life easier:
+
+* `DialogService`: A service to show _modal_ dialogs, which can be used in view models
+** In general, the dialog system in Avalonia opens a regular window which can be moved around etc.
+** I adapted it, so that it is a modal, blocking interaction with the main window until it is closed.
+Also, it is centered in the middle.
+** Additionally, I automatically inject a border outline and a little shadow effect
+* `ToastService`: A service to show toast notifications (similar to `Snackbar` in Angular Material), which can be used in view models
+** Only a thin wrapper around the quite useful Avalonia notification system
+* Two `LocalDate` converters
+** One converts between `LocalDate` and `DateTimeOffset` which is used by the `DatePicker` control
+** The other simply formats a `LocalDate` to a string (kind of like a pipe in Angular)
+
+== Application Requirements [[sec:requirements]]
+
+* Multiple shelters ('multi tenant') can be managed
+** New shelters can be added
+** It is possible to switch between them via a dropdown at any time
+** Puppies are assigned to a certain shelter and only show up if that shelter is selected
+** Newly admitted puppies are assigned to the currently selected shelter
+* There is an overview section which shows a list of all puppies with some basic information
+** Selecting a puppy in the list will load its details to the right side
+** If the selected shelter has no puppies yet, a hint is shown instead of the empty list
+* In the details section:
+** All information about the puppy is shown
+** If available, a picture of the puppy is shown
+** There is a button to adopt the puppy -- works only if the puppy is not already adopted
+** There is a button to delete the puppy -- works only if the puppy has been adopted already
+* In an additional view new puppies can be admitted
+** Name, breed and date of birth are required
+*** For selecting the date of birth, a date picker control is used
+** Optionally, a picture can be selected
+*** We do _not_ use drag & drop, because support of it is spotty in Avalonia, but the file picker dialog should work on all platforms
+* Input for shelter name, adopter name as well as the confirmation for deleting a puppy should be done via a dialog
+* Whenever an operation is performed, show a loading indicator and lock the buttons
+** Locking buttons should happen via the `CanExecute` property of the command
+* Use notifications (toasts) to inform the user about successful or failed operations
+* Styling of the application should approximate the look and feel shown in the sample run video below
+
+=== Sample Run
+
+video::pics/sample_run.mp4[Sample Run,width=800px]
+
+== Tasks
+
+`ShelterRepository` & `ShelterService` have been given as an example of how to implement the direct database access.
+
+Additionally, the `MainWindow`, `MainWindowViewModel`, `CreateShelterDialogWindow` and `CreateShelterDialogWindowViewModel` have been provided as well, to give you a starting point for how to use view models and dialogs together with the DI container -- including transaction handling.
+
+Your task is to implement the remaining parts of the application in a similar fashion.
+Mind the following requirements.
+And don't forget to create & apply the _migration_!
+
+TIP: Create stubs for all required methods, commands and properties so that the application compiles.
+Then do the actual implementation step by step, testing after each step.
+
+To make the processing phases more evident (e.g. progress bar visible for a while instead of just flickering), I have added a `DelayAsync` method to the base class of the services and use that in every service call.
+You are encouraged to do that as well to help you ensure that your 'disable buttons and show progress' logic works as expected.
+
+=== Puppy Admission
+
+To ease you into it, the majority of the most complicated part has also been given: the file picker dialog, which has to be handled to a large extend in the code behind.
+
+You are _inserting_ data, so don't forget to use a *transaction*.
+Since there are no requests or controllers, we handle transactions in the view models.
+
+Look for the `TODO` comments and complete the admission view & view model.
+
+CAUTION: `Bitmap` objects need to be disposed when no longer used -- that includes a property value being replaced with a new bitmap => the old one has to be disposed
+
+==== Image Processing
+
+Because we have no backend, just the database, we have to do something we usually avoid: storing images directly in the database.
+To ensure this doesn't blow up, we will limit the size of each image to a pixel size which almost guarantees to not exceed 100KB per image (which is fine with PostgreSQL https://www.postgresql.org/docs/current/storage-toast.html[TOAST]).
+
+Yet we allow the user to select larger images as well as PNG files, but we do store appropriately sized JPEGs only.
+To achieve this, some image processing is necessary -- and we already have everything we need, because Avalonia is built on top of https://skia.org/[Skia], the cross-platform graphics library that drives all the rendering you see in your application.
+So `Bitmap` does not only *display* images, it also decodes, scales and encodes them: `CreateScaledBitmap` plus `Save` with `JpegBitmapEncoderOptions` is the whole job.
+
+NOTE: We could reference https://github.com/mono/SkiaSharp[SkiaSharp] -- the .NET wrapper for Skia -- directly instead.
+But then _we_ would pin one Skia version while Avalonia pins another, and the two have to agree, so every package update turns into a compatibility check.
+Using what Avalonia already brings along avoids that problem entirely.
+
+That is also why `ImageProcessor` sits in the client project and not in `Core`: `Core` is the layer that moves behind an API later on, and the image processing is going to stay right here.
+It would run on a server just fine -- Skia does not care where it is hosted -- but scaling one photo is cheap on the machine of the user who picked it, while a server would be doing it for everybody.
+So we deliberately spend the client's resources instead of the server's.
+
+Make sure you take a good look at `ImageProcessor` -- and to make sure you do, I left a `TODO` as well 😉
+That is also an excellent moment to try to understand how we configure the maximum pixel size using `appsettings.json` and access it via the familiar `IOptions`.
+
+=== Puppy Overview
+
+This tab contains both the list of puppies and the details view.
+Try to load the puppies from the database in the parent view and pass it on to the child view model (the list).
+
+The main challenge of this part is to relay item selection from the list to the details view and changes (adoption, deletion) from the details back to the list.
+You can use `event`, `IPropertyChanged`, messaging or some simple delegates to achieve this.
+
+=== Puppy List
+
+Learn about the https://docs.avaloniaui.net/docs/reference/controls/datagrid[`DataGrid` control], which is a powerful and versatile way to display tabular data -- use it!
+
+When an item in the list is selected, this information should be passed on to the parent (or via some other route reach the details view model).
+
+Be aware that in the list we do not work with full `Puppy` entities, but just a small projection of the most relevant properties.
+
+=== Puppy Details
+
+This control is quite complicated.
+For once, take a look at the `Styles > DetailTable.axaml` file I provided.
+It contains CSS-like styling for a `Grid` which you have to use to style the grid displaying the puppy details.
+
+The content will also change every time a puppy is selected in the list.
+And you don't get the full `Puppy` entity, but only the ID, so you have to load the data from the database.
+
+Additionally, there are two buttons (adopt & delete) which are only enabled if the puppy is not adopted (adopt) or has been adopted (delete).
+See the instructions for the related dialogs below.
+
+Finally, _if_ an image for the puppy is available, it should be displayed here as well => somehow you need to convert the `byte[]` from the database to a `Bitmap` you can bind to.
+
+==== Adoption Dialog
+
+Allows the user to enter the name of the adopter and confirm or cancel the adoption.
+
+==== Deletion Dialog
+
+Allows the user to confirm the deletion of the puppy.
+We have to ensure that the puppy has been adopted before allowing the deletion, otherwise it would be all alone in the world 😭
+
+== Publishing
+
+Now that you are done with the implementation, we can try one final thing: publishing the application.
+
+I have prepared a `publish` script which should publish the application, single file (plus config file) and self contained (so no runtime needs to be installed) for you operating system.
+After running the script, you should find an executable file in the `publish` folder, which you can run to start the application.
+This is what you would ship to your users.
+Of course, the publish builds would in reality happen in a CI/CD pipeline, but we will not cover that here.

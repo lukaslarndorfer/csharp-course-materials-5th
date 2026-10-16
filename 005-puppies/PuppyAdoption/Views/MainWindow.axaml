@@ -1,0 +1,68 @@
+<util:ScopedWindow xmlns="https://github.com/avaloniaui"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:vm="using:PuppyAdoption.ViewModels"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:views="clr-namespace:PuppyAdoption.Views"
+                   xmlns:util="clr-namespace:PuppyAdoption.Util"
+                   xmlns:viewModels="clr-namespace:PuppyAdoption.ViewModels"
+                   mc:Ignorable="d" d:DesignWidth="1580" d:DesignHeight="988"
+                   x:Class="PuppyAdoption.Views.MainWindow"
+                   x:DataType="vm:MainWindowViewModel"
+                   Icon="/Assets/puppy_icon.ico"
+                   Width="1580" Height="988"
+                   Title="Puppy Adoptions">
+    <Design.DataContext>
+        <vm:DesignMainWindowViewModel />
+    </Design.DataContext>
+    <Interaction.Behaviors>
+        <EventTriggerBehavior EventName="Loaded">
+            <InvokeCommandAction Command="{Binding InitCommand}" />
+        </EventTriggerBehavior>
+    </Interaction.Behaviors>
+    <DockPanel>
+        <ProgressBar DockPanel.Dock="Top" IsIndeterminate="True" HorizontalAlignment="Stretch" Margin="80,200"
+                     IsVisible="{Binding Processing}" />
+        <Grid RowDefinitions="*,9*" RowSpacing="5" DockPanel.Dock="Top" IsVisible="{Binding ShowMainContent}">
+            <DockPanel Grid.Row="0" LastChildFill="True">
+                <DockPanel.Styles>
+                    <Style Selector="DockPanel > :is(Control)">
+                        <Setter Property="VerticalAlignment" Value="Center" />
+                    </Style>
+                </DockPanel.Styles>
+                <TextBlock FontSize="32" FontWeight="Bold" Margin="20,0,0,0"
+                           FontFamily="">
+                    Puppy Adoptions
+                </TextBlock>
+                <StackPanel
+                    DockPanel.Dock="Right"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="8"
+                    Margin="0,0,20,0">
+                    <Button Command="{Binding CreateShelterCommand}">+</Button>
+                    <ComboBox
+                        ItemsSource="{Binding Shelters}"
+                        SelectedItem="{Binding SelectedShelter}"
+                        FontSize="18"
+                        DisplayMemberBinding="{Binding Name}" />
+                </StackPanel>
+            </DockPanel>
+            <TabControl Grid.Row="1" IsEnabled="{Binding CanActivateTab}"
+                        IsVisible="{Binding ShowTabContent}">
+                <Interaction.Behaviors>
+                    <EventTriggerBehavior EventName="SelectionChanged">
+                        <InvokeCommandAction Command="{Binding HandleTabSelectionChangedCommand}"
+                                             PassEventArgsToCommand="True" />
+                    </EventTriggerBehavior>
+                </Interaction.Behaviors>
+                <TabItem Header="Overview" Tag="{x:Static viewModels:MainWindowViewModel.OverviewTab}">
+                    <views:PuppyOverview DataContext="{Binding OverviewViewModel}" />
+                </TabItem>
+                <TabItem Header="Admission" Tag="{x:Static viewModels:MainWindowViewModel.AdmissionsTab}">
+                    <views:PuppyAdmission Margin="0,5,0,0" DataContext="{Binding AdmissionViewModel}" />
+                </TabItem>
+            </TabControl>
+        </Grid>
+    </DockPanel>
+</util:ScopedWindow>
