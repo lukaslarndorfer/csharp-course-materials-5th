@@ -60,12 +60,12 @@ internal sealed class Runner(IServiceProvider services) : IRunner
         var runners = BatchRunsPerThread(experiments, threads)
                       .Select(ex => Task.Run(() =>
                       {
-                          var calculator = services.GetKeyedService<IPiCalculation>(vectorized ? IPiCalculation.VectorCalculation : IPiCalculation.BasicCalculation);
+                          var calculator = services.GetRequiredKeyedService<IPiCalculation>(vectorized ? IPiCalculation.VectorCalculation : IPiCalculation.BasicCalculation);
 
-                          double? result = calculator?.RunMonteCarloSimulation(ex, reportHandler, experimentResultReport,
+                          double result = calculator.RunMonteCarloSimulation(ex, reportHandler, experimentResultReport,
                                                                                cancellationToken);
 
-                          return (approxPi: result  ?? 0, Count: ex);
+                          return (approxPi: result, Count: ex);
                       }, cancellationToken)).ToList();
         await Task.WhenAll(runners);
 
