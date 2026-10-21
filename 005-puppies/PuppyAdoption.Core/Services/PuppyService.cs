@@ -71,9 +71,12 @@ internal sealed class PuppyService(IUnitOfWork uow, IDateTimeProvider dateTimePr
 {
     public async ValueTask<IReadOnlyCollection<PuppyInformation>> GetAllPuppiesAsync(Shelter shelter)
     {
-        // TODO
-        await ValueTask.CompletedTask;
-        throw new NotImplementedException();
+        IReadOnlyCollection<PuppyInformation> puppies = await uow.PuppyRepository.GetAllAsync(shelter);
+        logger.LogDebug("Received {Count} puppies", puppies.Count);
+
+        await DelayAsync();
+
+        return puppies;
     }
 
     public async ValueTask<Puppy> AdmitPuppyAsync(Shelter shelter, string name, string breed,
@@ -83,31 +86,91 @@ internal sealed class PuppyService(IUnitOfWork uow, IDateTimeProvider dateTimePr
         // will not be attached to the context of a different view model.
         // Therefore, we either have to load it again here to set it, or only set the foreign key.
         // Otherwise, we would get a duplicate primary key error for the shelter when saving the new puppy.
-        
-        // TODO
-        await ValueTask.CompletedTask;
-        throw new NotImplementedException();
+
+        Puppy puppy = new()
+        {
+            Shelter = null!,
+            ShelterId = shelter.Id,
+            Name = name,
+            Breed = breed,
+            DateOfBirth = dateOfBirth,
+            DateArrived = dateTimeProvider.GetLocalDate(),
+            Image = imageData
+        };
+        uow.PuppyRepository.Add(puppy);
+        await uow.SaveChangesAsync();
+        logger.LogInformation("Successfully admitted puppy {PuppyName} to shelter {ShelterName}", puppy.Name,
+                              shelter.Name);
+
+        await DelayAsync();
+
+        return puppy;
     }
 
     public async ValueTask<OneOf<Puppy, NotFound>> GetPuppyByIdAsync(int puppyId)
     {
-        // TODO
-        await ValueTask.CompletedTask;
-        throw new NotImplementedException();
+        var puppy = await uow.PuppyRepository.GetByIdAsync(puppyId);
+        if (puppy is null)
+        {
+            logger.LogWarning("Puppy with Id {Id} doesnt exist", puppyId);
+
+            return new NotFound();
+        }
+
+        logger.LogTrace("Puppy with Id {Id} found", puppyId);
+
+        await DelayAsync();
+
+        return puppy;
     }
 
     public async ValueTask<OneOf<Success, NotFound>> DeletePuppyAsync(int puppyId)
     {
-        // TODO
-        await ValueTask.CompletedTask;
-        throw new NotImplementedException();
+        var puppy = await uow.PuppyRepository.GetByIdAsync(puppyId);
+        if (puppy is null)
+        {
+            logger.LogWarning("Puppy with Id {Id} doesnt exist", puppyId);
+
+            return new NotFound();
+        }
+
+        uow.PuppyRepository.Remove(puppy);
+        await uow.SaveChangesAsync();
+        logger.LogInformation("Successfully deleted puppy with Id {Id}", puppyId);
+
+        await DelayAsync();
+
+        return new Success();
     }
 
     public async ValueTask<OneOf<Success<LocalDate>, NotFound, IPuppyService.AlreadyAdopted>>
         AdoptPuppyAsync(int puppyId, string adopterName)
     {
-        // TODO
-        await ValueTask.CompletedTask;
-        throw new NotImplementedException();
+        var puppy = await uow.PuppyRepository.GetByIdAsync(puppyId);
+        if (puppy is null)
+        {
+            logger.LogWarning("Puppy with Id {Id} doesnt exist", puppyId);
+
+            return new NotFound();
+        }
+
+        if (puppy.DateAdopted != null)
+        {
+            logger.LogDebug("Puppy with Id {Id} was already adopted", puppyId);
+
+            return new IPuppyService.AlreadyAdopted();
+        }
+
+        var today = dateTimeProvider.GetLocalDate();
+
+        puppy.AdoptedBy = adopterName;
+        puppy.DateAdopted = today;
+        await uow.SaveChangesAsync();
+        logger.LogInformation("Successfully adopted Puppy {PuppyName} by adopter {AdopterName}", puppy.Name,
+                              adopterName);
+
+        await DelayAsync();
+
+        return new Success<LocalDate>(today);
     }
 }
