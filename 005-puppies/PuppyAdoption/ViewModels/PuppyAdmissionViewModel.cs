@@ -38,4 +38,19 @@ public partial class PuppyAdmissionViewModel(
     
     [ObservableProperty]
     public partial Bitmap? SelectedImage { get; set; }
+    
+    [ObservableProperty]
+    public partial string PuppyName { get; set; } = string.Empty;
+    
+    [ObservableProperty]
+    public partial string Breed { get; set; } = string.Empty;
+    
+    [ObservableProperty]
+    public partial LocalDate SelectedDate { get; set; }
+
+    [ObservableProperty]
+    public partial bool Processing { get; set; } = false;
+
+
+
 }
