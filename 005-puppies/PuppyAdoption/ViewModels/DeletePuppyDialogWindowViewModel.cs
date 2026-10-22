@@ -27,6 +27,8 @@ public partial class DeletePuppyDialogWindowViewModel(
     ILogger<DeletePuppyDialogWindowViewModel> logger) : PuppyOperationDialogViewModel<bool>
 {
     // TODO
+    [ObservableProperty]
+    public override partial string PuppyName { get; set; } = string.Empty;
 }
 
 public sealed class DesignDeletePuppyDialogWindowViewModel : DeletePuppyDialogWindowViewModel

@@ -36,6 +36,9 @@ public partial class AdoptPuppyDialogWindowViewModel(
     /// <param name="AdoptedByName">Name of the person who adopted the puppy</param>
     /// <param name="AdoptionDate">The date the adoption went through</param>
     public sealed record AdoptionInformation(string AdoptedByName, LocalDate AdoptionDate);
+
+    [ObservableProperty]
+    public override partial string PuppyName { get; set; } = string.Empty;
 }
 
 public sealed class DesignAdoptPuppyDialogWindowViewModel : AdoptPuppyDialogWindowViewModel

@@ -22,6 +22,12 @@ public partial class PuppyOverviewViewModel(IPuppyService puppyService, ILogger<
     : ShelterOperationViewModel
 {
     // TODO
+
+    [ObservableProperty]
+    public partial PuppyListViewModel? PuppyListViewModel { get; set; }
+    
+    [ObservableProperty]
+    public partial PuppyDetailsViewModel? PuppyDetailsViewModel { get; set; }
 }
 
 public sealed class DesignPuppyOverviewViewModel()

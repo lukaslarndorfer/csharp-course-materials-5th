@@ -34,4 +34,8 @@ public partial class PuppyAdmissionViewModel(
     IOptions<Settings> options) : ShelterOperationViewModel
 {
     // TODO
+    public int MaxImageSize { get; } = options.Value.MaxImageSizePixel;
+    
+    [ObservableProperty]
+    public partial Bitmap? SelectedImage { get; set; }
 }
