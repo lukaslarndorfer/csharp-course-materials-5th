@@ -29,7 +29,7 @@ public partial class PuppyAdmission : ScopedControl
                 byte[]? imageData = GetImageData(filePath);
                 if (imageData is not null)
                 {
-                    // TODO pass image data to the view model
+                    viewModel.SetImageData(imageData);
                 }
             }
         }

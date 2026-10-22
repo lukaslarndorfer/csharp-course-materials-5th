@@ -16,7 +16,7 @@
             <TextBox Text="{Binding PuppyName}" />
             <TextBlock>Breed</TextBlock>
             <TextBox Text="{Binding Breed}" />
-            <DatePicker SelectedDate="{Binding SelectedDate, Converter={StaticResource LocalDateConverter}}" />
+            <DatePicker SelectedDate="{Binding DateOfBirth, Converter={StaticResource LocalDateConverter}}" />
 
 
             <ProgressBar  Orientation="Horizontal" IsIndeterminate="True" Margin="0,20, 0, 0"
@@ -24,7 +24,7 @@
         </StackPanel>
         <StackPanel Grid.Column="1" Spacing="10" Margin="10">
             <Border MaxWidth="{Binding MaxImageSize}" MaxHeight="{Binding MaxImageSize}">
-                <Image Source="{Binding SelectedImage}" Stretch="Uniform" />
+                <Image Source="{Binding ImagePreview}" Stretch="Uniform" />
             </Border>
             <Button Content="Pick Image" Click="HandlePickImage" HorizontalAlignment="Center" Margin="0,20" />
         </StackPanel>
