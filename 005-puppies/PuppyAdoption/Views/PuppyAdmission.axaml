@@ -12,7 +12,15 @@
     </UserControl.Resources>
     <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
         <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10" Spacing="20">
-            <!-- TODO input form -->
+            <TextBlock>Name</TextBlock>
+            <TextBox Text="{Binding Name}" />
+            <TextBlock>Breed</TextBlock>
+            <TextBox Text="{Binding Breed}" />
+            <DatePicker SelectedDate="{Binding SelectedDate, Converter={StaticResource LocalDateConverter}}" />
+
+
+            <ProgressBar  Orientation="Horizontal" IsIndeterminate="True" Margin="0,20, 0, 0"
+                         IsVisible="{Binding Processing}" />
         </StackPanel>
         <StackPanel Grid.Column="1" Spacing="10" Margin="10">
             <Border MaxWidth="{Binding MaxImageSize}" MaxHeight="{Binding MaxImageSize}">
