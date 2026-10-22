@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Xml;
 using Avalonia.Controls.Notifications;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -46,11 +47,20 @@ public partial class PuppyAdmissionViewModel(
     public partial string Breed { get; set; } = string.Empty;
     
     [ObservableProperty]
-    public partial LocalDate SelectedDate { get; set; }
+    public partial LocalDate? SelectedDate { get; set; }
 
     [ObservableProperty]
     public partial bool Processing { get; set; } = false;
 
+    private bool CanAddAdmission => !Processing && SelectedShelter is not null 
+                                                && SelectedDate is not null 
+                                                && PuppyName.Trim().Length > 0 
+                                                && Breed.Trim().Length > 0;
 
+
+    [RelayCommand(CanExecute = nameof(CanAddAdmission))]
+    private async Task AddAdmission()
+    {
+    } 
 
 }
