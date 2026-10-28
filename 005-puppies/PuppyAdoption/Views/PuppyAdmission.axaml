@@ -14,11 +14,15 @@
         <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10" Spacing="20">
             <TextBlock>Name</TextBlock>
             <TextBox Text="{Binding PuppyName}" />
+            
             <TextBlock>Breed</TextBlock>
             <TextBox Text="{Binding Breed}" />
+            
+            <TextBlock>Date of Birth</TextBlock>
             <DatePicker SelectedDate="{Binding DateOfBirth, Converter={StaticResource LocalDateConverter}}" />
-
-
+            
+            <Button HorizontalAlignment="Right" Command="{Binding AddAdmissionCommand}" >Save</Button>
+            
             <ProgressBar  Orientation="Horizontal" IsIndeterminate="True" Margin="0,20, 0, 0"
                          IsVisible="{Binding Processing}" />
         </StackPanel>
