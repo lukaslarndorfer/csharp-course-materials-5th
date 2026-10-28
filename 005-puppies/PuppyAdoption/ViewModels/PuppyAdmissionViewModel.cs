@@ -91,6 +91,7 @@ public partial class PuppyAdmissionViewModel(
             toastService.ShowSuccess("Shelter admitted puppy!");
 
             await transaction.CommitAsync();
+            ResetValues();
             logger.LogInformation("Successfully admitted puppy with Id {Id}", admitResult.Id);
         }
         catch (Exception ex)
@@ -103,6 +104,17 @@ public partial class PuppyAdmissionViewModel(
         {
             Processing = false;
         }
+    }
+
+    private void ResetValues()
+    {
+        PuppyName = string.Empty;
+        Breed = string.Empty;
+        DateOfBirth = dateTimeProvider.GetLocalDate();
+        _imageData = null;
+        var oldPreview = ImagePreview;
+        ImagePreview = null;
+        oldPreview?.Dispose();
     }
 
     public void SetImageData(byte[] imageData)
