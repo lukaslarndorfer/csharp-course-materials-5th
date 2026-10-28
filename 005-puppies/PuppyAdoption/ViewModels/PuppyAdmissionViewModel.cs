@@ -52,7 +52,7 @@ public partial class PuppyAdmissionViewModel(
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(AddAdmissionCommand))]
-    public partial LocalDate DateOfBirth { get; set; }
+    public partial LocalDate? DateOfBirth { get; set; }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(AddAdmissionCommand))]
@@ -62,6 +62,7 @@ public partial class PuppyAdmissionViewModel(
 
     private bool CanAddAdmission =>
         !Processing && SelectedShelter is not null
+                    && DateOfBirth is not null
                     && PuppyName.Trim().Length > 0
                     && Breed.Trim().Length > 0;
 
@@ -76,22 +77,33 @@ public partial class PuppyAdmissionViewModel(
     {
         Processing = true;
 
-        if (SelectedShelter is null)
+        if (SelectedShelter is null || DateOfBirth is null)
         {
-            toastService.ShowError("No Shelter is selected");
+            if (SelectedShelter is null)
+            {
+                toastService.ShowError("No Shelter is selected");
+            }
+            else if (DateOfBirth is null)
+            {
+                toastService.ShowError("No date of birth is selected");
+            }
+
             Processing = false;
+
             return;
         }
+
+        LocalDate dateValue = DateOfBirth.Value;
 
         await transaction.BeginTransactionAsync();
         try
         {
             var admitResult
-                = await puppyService.AdmitPuppyAsync(SelectedShelter, PuppyName, Breed, DateOfBirth, _imageData);
-            toastService.ShowSuccess("Shelter admitted puppy!");
+                = await puppyService.AdmitPuppyAsync(SelectedShelter, PuppyName, Breed, dateValue, _imageData);
 
             await transaction.CommitAsync();
             ResetValues();
+            toastService.ShowSuccess("Shelter admitted puppy!");
             logger.LogInformation("Successfully admitted puppy with Id {Id}", admitResult.Id);
         }
         catch (Exception ex)
@@ -120,7 +132,7 @@ public partial class PuppyAdmissionViewModel(
     public void SetImageData(byte[] imageData)
     {
         _imageData = imageProcessor.ProcessImage(imageData);
-        
+
         // convert the processed image bytes into a Bitmap to update the preview
         using var input = new MemoryStream(_imageData);
         var decoded = new Bitmap(input);
