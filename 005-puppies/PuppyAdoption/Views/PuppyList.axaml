@@ -14,6 +14,19 @@
         <vm:DesignPuppyListViewModel />
     </Design.DataContext>
     <DockPanel Margin="5" LastChildFill="True">
-        <!-- TODO -->
+        <ProgressBar DockPanel.Dock="Top" IsIndeterminate="True" HorizontalAlignment="Stretch"
+                     IsVisible="{Binding Loading}" />
+        <TextBlock FontStyle="Italic" IsVisible="{Binding ShowEmptyHint}">No puppies yet</TextBlock>
+        <DataGrid ItemsSource="{Binding Puppies}"
+                  AutoGenerateColumns="False" IsReadOnly="True"
+                  GridLinesVisibility="All" BorderThickness="1"
+                  BorderBrush="Gray" SelectedItem="{Binding SelectedPuppy}"
+                  IsVisible="{Binding HasEntries}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" />
+                <DataGridCheckBoxColumn Header="Adopted" Binding="{Binding Adopted}" IsReadOnly="True" />
+            </DataGrid.Columns>
+        </DataGrid>
     </DockPanel>
 </util:ScopedControl>
