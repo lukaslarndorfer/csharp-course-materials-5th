@@ -28,8 +28,6 @@ public partial class AdoptPuppyDialogWindowViewModel(
     ILogger<AdoptPuppyDialogWindowViewModel> logger)
     : PuppyOperationDialogViewModel<AdoptPuppyDialogWindowViewModel.AdoptionInformation?>
 {
-    // TODO
-
     /// <summary>
     ///     Represents the adoption information for a puppy
     /// </summary>
@@ -39,6 +37,72 @@ public partial class AdoptPuppyDialogWindowViewModel(
 
     [ObservableProperty]
     public override partial string PuppyName { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     Name of the person adopting the puppy
+    /// </summary>
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AdoptCommand))]
+    public partial string AdopterName { get; set; } = string.Empty;
+
+    /// <summary>
+    ///     Flag indicating whether the dialog is currently processing
+    /// </summary>
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(AdoptCommand), nameof(CancelCommand))]
+    public partial bool Processing { get; set; }
+
+    private bool CanCancel => !Processing;
+    private bool CanAdopt => !string.IsNullOrWhiteSpace(AdopterName) && !Processing;
+
+    [RelayCommand(CanExecute = nameof(CanCancel))]
+    private void Cancel()
+    {
+        Close(null);
+    }
+
+    [RelayCommand(CanExecute = nameof(CanAdopt))]
+    private async Task Adopt()
+    {
+        Processing = true;
+        string adopterName = AdopterName.Trim();
+        try
+        {
+            await transaction.BeginTransactionAsync();
+            OneOf<Success<LocalDate>, NotFound, IPuppyService.AlreadyAdopted> result
+                = await puppyService.AdoptPuppyAsync(PuppyId, adopterName);
+            await result.Match<ValueTask>(async success =>
+            {
+                await transaction.CommitAsync();
+                logger.LogInformation("Puppy with id {Id} successfully adopted at {Date}", PuppyId, success.Value);
+                toastService.ShowSuccess("Puppy successfully adopted");
+                Close(new AdoptionInformation(adopterName, success.Value));
+            }, async notFound =>
+            {
+                await transaction.RollbackAsync();
+                logger.LogWarning("Puppy with id {Id} not found", PuppyId);
+                toastService.ShowError("Puppy wasn't found");
+                Close(null);
+            }, async alreadyAdopted =>
+            {
+                await transaction.RollbackAsync();
+                logger.LogWarning("Puppy with id {Id} is already adopted", PuppyId);
+                toastService.ShowError("Puppy is already adopted!");
+                Close(null);
+            });
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync();
+            logger.LogError(ex, "Error occurred while trying to adopt puppy");
+            toastService.ShowError("Error occurred while trying to adopt puppy");
+            Close(null);
+        }
+        finally
+        {
+            Processing = false;
+        }
+    }
 }
 
 public sealed class DesignAdoptPuppyDialogWindowViewModel : AdoptPuppyDialogWindowViewModel
