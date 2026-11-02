@@ -141,31 +141,86 @@ public partial class PuppyDetailsViewModel(
     /// <param name="puppyDeletedHandler">A callback for after deletion operations</param>
     public async ValueTask InitDetailsAsync(int puppyId, Action puppyAdoptedHandler, Action puppyDeletedHandler)
     {
-        // TODO
-        await ValueTask.CompletedTask;
-        throw new NotImplementedException();
+        Clear();
+        _puppyAdoptedHandler = puppyAdoptedHandler;
+        _puppyDeletedHandler = puppyDeletedHandler;
+        Loading = true;
+        try
+        {
+            var result = await puppyService.GetPuppyByIdAsync(puppyId);
+            result.Switch(puppy =>
+            {
+                Id = puppyId;
+                Name = puppy.Name;
+                Breed = puppy.Breed;
+                DateOfBirth = puppy.DateOfBirth;
+                DateArrived = puppy.DateArrived;
+                DateAdopted = puppy.DateAdopted;
+                if (puppy.AdoptedBy != null)
+                {
+                    AdoptedBy = puppy.AdoptedBy;
+                }
+
+                SetImage(puppy.Image);
+                DataSet = true;
+            }, notFound => { toastService.ShowWarning($"No puppy with id {puppyId} found"); });
+        }
+        catch (Exception ex)
+        {
+            toastService.ShowError(ex.ToString());
+        }
+        finally
+        {
+            Loading = false;
+        }
     }
 
     private void SetImage(byte[]? imageData)
     {
-        // TODO
-        throw new NotImplementedException();
+        Bitmap? oldImage;
+        if (imageData == null)
+        {
+            oldImage = Image;
+            Image = null;
+            oldImage?.Dispose();
+
+            return;
+        }
+
+        using var input = new MemoryStream(imageData);
+        var decoded = new Bitmap(input);
+        oldImage = Image;
+        Image = decoded;
+        oldImage?.Dispose();
     }
 
     [RelayCommand(CanExecute = nameof(CanBeDeleted))]
     private async Task DeletePuppyAsync()
     {
-        // TODO
-        await ValueTask.CompletedTask;
-        throw new NotImplementedException();
+        bool deletionSucceeded = await dialogService
+            .ShowModalDialogAsync<DeletePuppyDialogWindow, DeletePuppyDialogWindowViewModel, bool>(SetDialogData);
+        if (!deletionSucceeded)
+        {
+            return;
+        }
+
+        _puppyDeletedHandler?.Invoke();
     }
 
     [RelayCommand(CanExecute = nameof(CanBeAdopted))]
     private async Task AdoptPuppyAsync()
     {
-        // TODO
-        await ValueTask.CompletedTask;
-        throw new NotImplementedException();
+        var adoptionInformation = await dialogService
+            .ShowModalDialogAsync<AdoptPuppyDialogWindow, AdoptPuppyDialogWindowViewModel,
+                AdoptPuppyDialogWindowViewModel.AdoptionInformation?>(SetDialogData);
+        if (adoptionInformation is null)
+        {
+            return;
+        }
+
+        AdoptedBy = adoptionInformation.AdoptedByName;
+        DateAdopted = adoptionInformation.AdoptionDate;
+        _puppyAdoptedHandler?.Invoke();
     }
 
     private void SetDialogData<TResult>(PuppyOperationDialogViewModel<TResult> viewModel)
