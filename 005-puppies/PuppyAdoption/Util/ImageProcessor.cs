@@ -43,7 +43,15 @@ internal sealed class ImageProcessor(IOptions<Settings> options) : IImageProcess
 
     private PixelSize GetResizedSize(PixelSize size)
     {
-        // TODO - ensure largest side is not larger than max size as configured in the application settings
-        throw new NotImplementedException();
+        var largestSide = Math.Max(size.Width, size.Height);
+        if (largestSide <= _maxImageSize)
+        {
+            return size;
+        }
+
+        var scale = (double) _maxImageSize / largestSide;
+
+        return new PixelSize(Math.Max(1, (int) Math.Round(size.Width * scale)),
+                             Math.Max(1, (int) Math.Round(size.Height * scale)));
     }
 }
