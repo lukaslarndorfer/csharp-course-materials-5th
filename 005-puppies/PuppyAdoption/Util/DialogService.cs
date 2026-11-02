@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -87,7 +87,7 @@ internal sealed class DialogService : IDialogService
         var lineThickness = new Thickness(1);
         var shadowColor = new Color(125, 0, 0, 0);
         var borderColor = Brushes.LightGray;
-        
+
         IBrush? background = null;
         if (dialog is Window window)
         {
@@ -95,7 +95,7 @@ internal sealed class DialogService : IDialogService
             background = window.Background;
             window.Background = null;
         }
-        
+
         var border = new Border
         {
             BorderBrush = borderColor,
@@ -113,7 +113,7 @@ internal sealed class DialogService : IDialogService
             }),
             Background = background
         };
-        
+
         object? content = dialog.Content;
         dialog.Content = border;
         border.Child = content as Control;

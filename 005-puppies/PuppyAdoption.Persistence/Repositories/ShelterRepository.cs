@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PuppyAdoption.Persistence.Model;
 
 namespace PuppyAdoption.Persistence.Repositories;

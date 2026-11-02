@@ -1,4 +1,4 @@
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using PuppyAdoption.ViewModels;
 
 namespace PuppyAdoption.Util;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Avalonia.Controls.Notifications;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -31,11 +31,11 @@ public partial class DeletePuppyDialogWindowViewModel(
     public override partial string PuppyName { get; set; } = string.Empty;
 
     public string PuppyDeletionConfirmationText => $"Are you sure you want to delete {PuppyName} from the system?";
-    
+
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DeleteCommand), nameof(CancelCommand))]
     public partial bool Processing { get; set; }
-    
+
     private bool CanExecute => !Processing;
 
     [RelayCommand(CanExecute = nameof(CanExecute))]
@@ -43,7 +43,7 @@ public partial class DeletePuppyDialogWindowViewModel(
     {
         Close(false);
     }
-    
+
     [RelayCommand(CanExecute = nameof(CanExecute))]
     private async Task Delete()
     {

@@ -1,4 +1,4 @@
-namespace PuppyAdoption.Shared;
+﻿namespace PuppyAdoption.Shared;
 
 /// <summary>
 ///     Represents basic information about a puppy

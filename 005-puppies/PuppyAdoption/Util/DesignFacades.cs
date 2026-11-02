@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Controls;
@@ -24,7 +24,8 @@ public static class DesignFacades
     public sealed class DummyLogger<T> : ILogger<T>
     {
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
-                                Func<TState, Exception?, string> formatter) { }
+                                Func<TState, Exception?, string> formatter)
+        { }
 
         public bool IsEnabled(LogLevel logLevel) => true;
 

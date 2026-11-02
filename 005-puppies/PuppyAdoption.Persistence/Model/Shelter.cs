@@ -1,4 +1,4 @@
-namespace PuppyAdoption.Persistence.Model;
+﻿namespace PuppyAdoption.Persistence.Model;
 
 /// <summary>
 ///     Represents a shelter entity

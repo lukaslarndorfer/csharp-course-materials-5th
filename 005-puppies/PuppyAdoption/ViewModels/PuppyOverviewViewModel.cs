@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ public partial class PuppyOverviewViewModel(IPuppyService puppyService, ILogger<
 {
 
     private ObservableCollection<PuppyInformation> _puppies = [];
-    
+
 
     public override async ValueTask InitAsync(Shelter shelter)
     {
@@ -34,7 +34,7 @@ public partial class PuppyOverviewViewModel(IPuppyService puppyService, ILogger<
         PuppyListViewModel.Loading = false;
         PuppyListViewModel.Puppies = _puppies;
 
-        logger.LogDebug("Received {Count} puppies",_puppies.Count);
+        logger.LogDebug("Received {Count} puppies", _puppies.Count);
         PuppyListViewModel.SelectedPuppyChanged = async void (puppyId) =>
         {
             try
@@ -78,8 +78,8 @@ public partial class PuppyOverviewViewModel(IPuppyService puppyService, ILogger<
                 logger.LogError(ex, "Failed to handle selected puppy changed event");
             }
         };
-        
-        
+
+
     }
 
     public override async ValueTask DisposeAsync()
@@ -95,12 +95,12 @@ public partial class PuppyOverviewViewModel(IPuppyService puppyService, ILogger<
         }
 
         await base.DisposeAsync();
-        
+
     }
 
     [ObservableProperty]
     public partial PuppyListViewModel? PuppyListViewModel { get; set; }
-    
+
     [ObservableProperty]
     public partial PuppyDetailsViewModel? PuppyDetailsViewModel { get; set; }
 }

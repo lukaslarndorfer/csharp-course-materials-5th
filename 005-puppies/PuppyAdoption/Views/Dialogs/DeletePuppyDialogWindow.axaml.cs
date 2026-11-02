@@ -1,4 +1,4 @@
-using PuppyAdoption.Util;
+﻿using PuppyAdoption.Util;
 
 namespace PuppyAdoption.Views.Dialogs;
 
@@ -9,4 +9,3 @@ public partial class DeletePuppyDialogWindow : ScopedWindow
         InitializeComponent();
     }
 }
-
