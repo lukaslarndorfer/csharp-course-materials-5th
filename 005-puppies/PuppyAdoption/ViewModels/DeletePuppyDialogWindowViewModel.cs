@@ -30,7 +30,7 @@ public partial class DeletePuppyDialogWindowViewModel(
     [NotifyPropertyChangedFor(nameof(PuppyDeletionConfirmationText))]
     public override partial string PuppyName { get; set; } = string.Empty;
 
-    public string PuppyDeletionConfirmationText => $"Are you sure you want to delete {PuppyName}?";
+    public string PuppyDeletionConfirmationText => $"Are you sure you want to delete {PuppyName} from the system?";
     
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(DeleteCommand), nameof(CancelCommand))]
@@ -56,7 +56,7 @@ public partial class DeletePuppyDialogWindowViewModel(
             await result.Match<ValueTask>(async success =>
             {
                 await transaction.CommitAsync();
-                toastService.ShowSuccess("Puppy deleted successfully!");
+                toastService.ShowSuccess("Puppy deleted successfully");
                 logger.LogInformation("Successfully deleted puppy with Id {Id}", PuppyId);
                 Close(true);
             }, async notFound =>
