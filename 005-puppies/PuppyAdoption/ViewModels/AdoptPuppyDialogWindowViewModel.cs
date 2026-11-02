@@ -75,7 +75,8 @@ public partial class AdoptPuppyDialogWindowViewModel(
             {
                 await transaction.CommitAsync();
                 logger.LogInformation("Puppy with id {Id} successfully adopted at {Date}", PuppyId, success.Value);
-                toastService.ShowSuccess("Puppy successfully adopted");
+                toastService.ShowMessage($"Puppy {PuppyName} has been adopted successfully!",
+                                         "Adoption Successful", NotificationType.Success);
                 Close(new AdoptionInformation(adopterName, success.Value));
             }, async notFound =>
             {
