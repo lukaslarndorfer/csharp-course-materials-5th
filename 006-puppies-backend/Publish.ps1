@@ -8,7 +8,7 @@ function Get-Architecture {
     }
 }
 
-Push-Location -Path "PuppyAdoption"
+Push-Location -Path (Join-Path -Path $PSScriptRoot -ChildPath "frontend/PuppyAdoption.Client")
 
 $osName = if ($IsWindows) {
     "win"
@@ -24,7 +24,7 @@ $osName = if ($IsWindows) {
 $arch = Get-Architecture
 $rid = "$osName-$arch"
 
-$publishDir = Join-Path -Path ".." -ChildPath "publish"
+$publishDir = Join-Path -Path $PSScriptRoot -ChildPath "publish"
 
 dotnet publish -c Release -r $rid -o $publishDir `
   -p:PublishSingleFile=true `

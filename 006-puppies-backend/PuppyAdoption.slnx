@@ -1,10 +1,20 @@
 <Solution>
+  <Folder Name="/backend/">
+    <Project Path="backend/PuppyAdoption.Backend.Persistence/PuppyAdoption.Backend.Persistence.csproj" />
+    <Project Path="backend/PuppyAdoption.Backend.Services/PuppyAdoption.Backend.Services.csproj" />
+    <Project Path="backend/PuppyAdoption.Backend.Shared/PuppyAdoption.Backend.Shared.csproj" />
+    <Project Path="backend/PuppyAdoption.Backend.Test/PuppyAdoption.Backend.Test.csproj" />
+    <Project Path="backend/PuppyAdoption.Backend.TestInt/PuppyAdoption.Backend.TestInt.csproj" />
+    <Project Path="backend/PuppyAdoption.Backend/PuppyAdoption.Backend.csproj" />
+  </Folder>
+  <Folder Name="/frontend/">
+    <Project Path="frontend/PuppyAdoption.Client.Core/PuppyAdoption.Client.Core.csproj" />
+    <Project Path="frontend/PuppyAdoption.Client.Shared/PuppyAdoption.Client.Shared.csproj" />
+    <Project Path="frontend/PuppyAdoption.Client/PuppyAdoption.Client.csproj" />
+  </Folder>
+  <Folder Name="/shared/" />
   <Folder Name="/SolutionItems/">
     <File Path="ManageMigration.ps1" />
     <File Path="Publish.ps1" />
   </Folder>
-  <Project Path="PuppyAdoption.Core/PuppyAdoption.Core.csproj" />
-  <Project Path="PuppyAdoption.Persistence/PuppyAdoption.Persistence.csproj" />
-  <Project Path="PuppyAdoption.Shared/PuppyAdoption.Shared.csproj" />
-  <Project Path="PuppyAdoption/PuppyAdoption.csproj" />
 </Solution>

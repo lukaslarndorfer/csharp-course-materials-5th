@@ -1,8 +1,8 @@
 #!/usr/bin/env pwsh
 
 param(
-    [string]$MigrationProject = "./PuppyAdoption.Persistence/PuppyAdoption.Persistence.csproj",
-    [string]$StartupProject   = "./PuppyAdoption/PuppyAdoption.csproj"
+    [string]$MigrationProject = "./backend/PuppyAdoption.Backend.Persistence/PuppyAdoption.Backend.Persistence.csproj",
+    [string]$StartupProject   = "./backend/PuppyAdoption.Backend/PuppyAdoption.Backend.csproj"
 )
 
 # Define regex for migration names to skip the [dbg] logs and select the migration by checking the date at the beginning
