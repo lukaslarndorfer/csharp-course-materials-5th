@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using OneOf;
 using OneOf.Types;
-using PuppyAdoption.Persistence;
-using PuppyAdoption.Persistence.Model;
+using PuppyAdoption.Backend.Persistence.Model;
+using PuppyAdoption.Backend.Persistence.Util;
 
-namespace PuppyAdoption.Client.Core.Services;
+namespace PuppyAdoption.Backend.Services;
 
 /// <summary>
 ///     A service for managing shelters
@@ -38,7 +38,7 @@ public interface IShelterService
     public readonly record struct NameAlreadyExists;
 }
 
-internal sealed class ShelterService(IUnitOfWork uow, ILogger<ShelterService> logger) : ServiceBase, IShelterService
+internal sealed class ShelterService(IUnitOfWork uow, ILogger<ShelterService> logger) : IShelterService
 {
     public async ValueTask<OneOf<Shelter, NotFound>> GetShelterByIdAsync(int id)
     {
@@ -49,18 +49,14 @@ internal sealed class ShelterService(IUnitOfWork uow, ILogger<ShelterService> lo
 
             return new NotFound();
         }
-
-        await DelayAsync();
-
+        
         return shelter;
     }
 
     public async ValueTask<IReadOnlyCollection<Shelter>> GetAllSheltersAsync()
     {
         IReadOnlyCollection<Shelter> shelters = await uow.ShelterRepository.GetAllAsync();
-
-        await DelayAsync();
-
+        
         return shelters;
     }
 
@@ -84,9 +80,7 @@ internal sealed class ShelterService(IUnitOfWork uow, ILogger<ShelterService> lo
 
         logger.LogInformation("Created new shelter with ID {ShelterId} and name {ShelterName}", shelter.Id,
                               shelter.Name);
-
-        await DelayAsync();
-
+        
         return new Success<Shelter>(shelter);
     }
 }

@@ -10,7 +10,8 @@ public static class ServicesSetup
         public void ConfigureCore()
         {
             services.AddSingleton<IClock>(SystemClock.Instance);
-            
+            services.AddScoped<IShelterService, ShelterService>();
+            services.AddScoped<IPuppyService, PuppyService>();
         }
     }
 }

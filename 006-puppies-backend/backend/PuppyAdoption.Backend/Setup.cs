@@ -1,5 +1,6 @@
 using FluentValidation;
 using PuppyAdoption.Backend.Persistence.Util;
+using PuppyAdoption.Backend.Services;
 using PuppyAdoption.Backend.Util;
 using PuppyAdoption.Backend.Services.Util;
 using Serilog;
@@ -42,6 +43,7 @@ public static class Setup
         {
             services.ConfigurePersistence(configurationManager, isDev);
             services.ConfigureCore();
+
         }
 
         public Settings LoadAndConfigureSettings(IConfigurationManager configurationManager)

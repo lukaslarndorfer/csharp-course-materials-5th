@@ -1,12 +1,10 @@
-﻿using Microsoft.Extensions.Logging;
-using NodaTime;
-using OneOf;
+﻿using OneOf;
 using OneOf.Types;
-using PuppyAdoption.Persistence;
-using PuppyAdoption.Persistence.Model;
-using PuppyAdoption.Shared;
+using PuppyAdoption.Backend.Persistence.Model;
+using PuppyAdoption.Backend.Persistence.Util;
+using PuppyAdoption.Backend.Shared;
 
-namespace PuppyAdoption.Client.Core.Services;
+namespace PuppyAdoption.Backend.Services;
 
 /// <summary>
 ///     Service for managing puppies in the shelter
@@ -16,21 +14,21 @@ public interface IPuppyService
     /// <summary>
     ///     Gets basic information about all puppies in the given shelter
     /// </summary>
-    /// <param name="shelter">The shelter for which to retrieve puppy data</param>
-    /// <returns>Overview information about all puppies in the shelter</returns>
-    public ValueTask<IReadOnlyCollection<PuppyInformation>> GetAllPuppiesAsync(Shelter shelter);
+    /// <param name="shelterId">The id of the shelter for which to retrieve puppy data</param>
+    /// <returns>Overview information about all puppies in the shelter or <see cref="NotFound"/> if no shelter with the given id does exist</returns>
+    public ValueTask<OneOf<Success<IReadOnlyCollection<PuppyInformation>>, NotFound>> GetAllPuppiesAsync(int shelterId);
 
     /// <summary>
     ///     Admits a new puppy to the shelter with the given details
     /// </summary>
-    /// <param name="shelter">The shelter to which to admit the puppy to</param>
+    /// <param name="shelterId">The id of the shelter to which to admit the puppy to</param>
     /// <param name="name">Name of the puppy</param>
     /// <param name="breed">Breed of the puppy</param>
     /// <param name="dateOfBirth">Date of birth of the puppy</param>
     /// <param name="imageData">Optionally, bytes of an image of the puppy</param>
-    /// <returns>The created puppy entity</returns>
-    public ValueTask<Puppy> AdmitPuppyAsync(Shelter shelter, string name, string breed,
-                                            LocalDate dateOfBirth, byte[]? imageData);
+    /// <returns>The created puppy entity or <see cref="NotFound"/> if no shelter with the given id does exist</returns>
+    public ValueTask<OneOf<Success<Puppy>, NotFound>> AdmitPuppyAsync(int shelterId, string name, string breed,
+                                                                      LocalDate dateOfBirth, byte[]? imageData);
 
     /// <summary>
     ///     Attempts to retrieve a puppy by its ID.
@@ -66,35 +64,45 @@ public interface IPuppyService
     public readonly record struct AlreadyAdopted;
 }
 
-internal sealed class PuppyService(IUnitOfWork uow, IDateTimeProvider dateTimeProvider, ILogger<PuppyService> logger)
-    : ServiceBase, IPuppyService
+internal sealed class PuppyService(IUnitOfWork uow, IClock clock, ILogger<PuppyService> logger)
+    : IPuppyService
 {
-    public async ValueTask<IReadOnlyCollection<PuppyInformation>> GetAllPuppiesAsync(Shelter shelter)
+    public async ValueTask<OneOf<Success<IReadOnlyCollection<PuppyInformation>>, NotFound>> GetAllPuppiesAsync(
+        int shelterId)
     {
+        var shelter = await uow.ShelterRepository.GetByIdAsync(shelterId);
+        if (shelter is null)
+        {
+            logger.LogWarning("Shelter with id {Id} doesnt exist", shelterId);
+
+            return new NotFound();
+        }
+
         IReadOnlyCollection<PuppyInformation> puppies = await uow.PuppyRepository.GetAllAsync(shelter);
         logger.LogDebug("Received {Count} puppies", puppies.Count);
 
-        await DelayAsync();
-
-        return puppies;
+        return new Success<IReadOnlyCollection<PuppyInformation>>(puppies);
     }
 
-    public async ValueTask<Puppy> AdmitPuppyAsync(Shelter shelter, string name, string breed,
-                                                  LocalDate dateOfBirth, byte[]? imageData)
+    public async ValueTask<OneOf<Success<Puppy>, NotFound>> AdmitPuppyAsync(int shelterId, string name, string breed,
+                                                                            LocalDate dateOfBirth, byte[]? imageData)
     {
-        // Due to different scopes and database contexts for each view model, even entities loaded tracking
-        // will not be attached to the context of a different view model.
-        // Therefore, we either have to load it again here to set it, or only set the foreign key.
-        // Otherwise, we would get a duplicate primary key error for the shelter when saving the new puppy.
+        var shelter = await uow.ShelterRepository.GetByIdAsync(shelterId);
+        if (shelter is null)
+        {
+            logger.LogWarning("Shelter with id {Id} doesnt exist", shelterId);
+
+            return new NotFound();
+        }
 
         Puppy puppy = new()
         {
-            Shelter = null!,
-            ShelterId = shelter.Id,
+            Shelter = shelter,
+            ShelterId = shelterId,
             Name = name,
             Breed = breed,
             DateOfBirth = dateOfBirth,
-            DateArrived = dateTimeProvider.GetLocalDate(),
+            DateArrived = clock.GetCurrentInstant().InZone(Const.TimeZone).Date,
             Image = imageData
         };
         uow.PuppyRepository.Add(puppy);
@@ -102,9 +110,7 @@ internal sealed class PuppyService(IUnitOfWork uow, IDateTimeProvider dateTimePr
         logger.LogInformation("Successfully admitted puppy {PuppyName} to shelter {ShelterName}", puppy.Name,
                               shelter.Name);
 
-        await DelayAsync();
-
-        return puppy;
+        return new Success<Puppy>(puppy);
     }
 
     public async ValueTask<OneOf<Puppy, NotFound>> GetPuppyByIdAsync(int puppyId)
@@ -118,8 +124,6 @@ internal sealed class PuppyService(IUnitOfWork uow, IDateTimeProvider dateTimePr
         }
 
         logger.LogTrace("Puppy with Id {Id} found", puppyId);
-
-        await DelayAsync();
 
         return puppy;
     }
@@ -137,8 +141,6 @@ internal sealed class PuppyService(IUnitOfWork uow, IDateTimeProvider dateTimePr
         uow.PuppyRepository.Remove(puppy);
         await uow.SaveChangesAsync();
         logger.LogInformation("Successfully deleted puppy with Id {Id}", puppyId);
-
-        await DelayAsync();
 
         return new Success();
     }
@@ -161,15 +163,13 @@ internal sealed class PuppyService(IUnitOfWork uow, IDateTimeProvider dateTimePr
             return new IPuppyService.AlreadyAdopted();
         }
 
-        var today = dateTimeProvider.GetLocalDate();
+        var today = clock.GetCurrentInstant().InZone(Const.TimeZone).Date;
 
         puppy.AdoptedBy = adopterName;
         puppy.DateAdopted = today;
         await uow.SaveChangesAsync();
         logger.LogInformation("Successfully adopted Puppy {PuppyName} by adopter {AdopterName}", puppy.Name,
                               adopterName);
-
-        await DelayAsync();
 
         return new Success<LocalDate>(today);
     }
