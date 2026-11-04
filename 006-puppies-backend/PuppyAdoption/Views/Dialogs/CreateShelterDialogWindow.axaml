@@ -1,0 +1,24 @@
+<util:ScopedWindow xmlns="https://github.com/avaloniaui"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:vm="using:PuppyAdoption.ViewModels"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:util="clr-namespace:PuppyAdoption.Util"
+                   mc:Ignorable="d" d:DesignWidth="220" d:DesignHeight="150"
+                   x:Class="PuppyAdoption.Views.Dialogs.CreateShelterDialogWindow"
+                   x:DataType="vm:CreateShelterDialogWindowViewModel"
+                   Title="Create Shelter">
+    <Design.DataContext>
+        <vm:DesignCreateShelterDialogWindowViewModel />
+    </Design.DataContext>
+    <Grid RowDefinitions="*,*,*,*" Margin="5">
+        <TextBlock Grid.Row="0">Shelter Name:</TextBlock>
+        <TextBox Grid.Row="1" Text="{Binding ShelterName}" PlaceholderText="Enter shelter name" />
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Margin="0,5,0,0">
+            <Button Command="{Binding CancelCommand}" VerticalAlignment="Center">Cancel</Button>
+            <Button Command="{Binding CreateCommand}" VerticalAlignment="Center">Create Shelter</Button>
+        </StackPanel>
+        <ProgressBar Grid.Row="3" Orientation="Horizontal" IsIndeterminate="True" Margin="0,20, 0, 0"
+                     IsVisible="{Binding Processing}" />
+    </Grid>
+</util:ScopedWindow>

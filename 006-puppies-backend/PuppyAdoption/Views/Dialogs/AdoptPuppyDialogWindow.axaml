@@ -1,0 +1,25 @@
+<util:ScopedWindow xmlns="https://github.com/avaloniaui"
+                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                   xmlns:util="clr-namespace:PuppyAdoption.Util"
+                   xmlns:viewModels="clr-namespace:PuppyAdoption.ViewModels"
+                   mc:Ignorable="d" d:DesignWidth="250" d:DesignHeight="150"
+                   x:Class="PuppyAdoption.Views.Dialogs.AdoptPuppyDialogWindow"
+                   x:DataType="viewModels:AdoptPuppyDialogWindowViewModel"
+                   Title="Adopt Puppy">
+    <Design.DataContext>
+        <viewModels:DesignAdoptPuppyDialogWindowViewModel />
+    </Design.DataContext>
+    <Grid Margin="7" RowDefinitions="*,*,*,*">
+        <TextBlock Grid.Row="0">Adopter Name:</TextBlock>
+        <TextBox Grid.Row="1" Text="{Binding AdopterName}" PlaceholderText="Enter adopter name" />
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="0,5,0,0">
+            <Button Command="{Binding CancelCommand}">Cancel</Button>
+            <Button Command="{Binding AdoptCommand}">Adopt Puppy</Button>
+        </StackPanel>
+        <ProgressBar Grid.Row="3" IsIndeterminate="True" HorizontalAlignment="Stretch" Margin="0,20,0,0"
+                     IsVisible="{Binding Processing}" />
+    </Grid>
+    
+</util:ScopedWindow>

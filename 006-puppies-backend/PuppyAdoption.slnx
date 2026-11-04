@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/SolutionItems/">
+    <File Path="ManageMigration.ps1" />
+    <File Path="Publish.ps1" />
+  </Folder>
+  <Project Path="PuppyAdoption.Core/PuppyAdoption.Core.csproj" />
+  <Project Path="PuppyAdoption.Persistence/PuppyAdoption.Persistence.csproj" />
+  <Project Path="PuppyAdoption.Shared/PuppyAdoption.Shared.csproj" />
+  <Project Path="PuppyAdoption/PuppyAdoption.csproj" />
+</Solution>
