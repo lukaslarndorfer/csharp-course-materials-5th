@@ -142,9 +142,9 @@ public sealed class PuppyTests(WebApiTestFixture webApiFixture) : WebApiTestBase
         response.Headers.Location.Should().NotBeNull()
                 .And.Match<Uri>(uri => uri.AbsoluteUri.EndsWith($"{PuppyUrl}/{content.Id}"));
 
-
-        var puppies = await ApiClient.GetFromJsonAsync<PuppyInformationResponse>($"{ShelterUrl}/{_emptyShelterId}/puppies",
-                                                                                 JsonOptions, TestCancellationToken);
+        var puppies
+            = await ApiClient.GetFromJsonAsync<PuppyInformationResponse>($"{ShelterUrl}/{_emptyShelterId}/puppies",
+                                                                         JsonOptions, TestCancellationToken);
         puppies.Should().NotBeNull();
         puppies.Puppies.Should().ContainSingle(p => p.Id == content.Id);
     }
