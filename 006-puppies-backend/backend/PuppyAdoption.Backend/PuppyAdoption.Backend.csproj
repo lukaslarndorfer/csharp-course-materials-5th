@@ -8,12 +8,13 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
-        <PackageReference Include="Serilog.NodaTime" Version="3.0.0"/>
+        <PackageReference Include="Serilog.NodaTime" Version="3.0.0" />
         <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\PuppyAdoption.Backend.Services\PuppyAdoption.Backend.Services.csproj" />
+        <ProjectReference Include="..\..\shared\PuppyAdoption.Shared\PuppyAdoption.Shared.csproj" />
     </ItemGroup>
 
     <ItemGroup>

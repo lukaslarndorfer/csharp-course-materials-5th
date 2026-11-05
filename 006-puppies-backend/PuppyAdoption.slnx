@@ -12,7 +12,9 @@
     <Project Path="frontend/PuppyAdoption.Client.Shared/PuppyAdoption.Client.Shared.csproj" />
     <Project Path="frontend/PuppyAdoption.Client/PuppyAdoption.Client.csproj" />
   </Folder>
-  <Folder Name="/shared/" />
+  <Folder Name="/shared/">
+    <Project Path="shared/PuppyAdoption.Shared/PuppyAdoption.Shared.csproj" />
+  </Folder>
   <Folder Name="/SolutionItems/">
     <File Path="ManageMigration.ps1" />
     <File Path="Publish.ps1" />
