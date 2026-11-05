@@ -16,7 +16,10 @@ public static class Setup
             var settings = sp.GetRequiredService<IOptions<Settings>>().Value;
             client.BaseAddress = new Uri(settings.ApiBaseUrl);
         });
+
         services.AddSingleton<IShelterService, ShelterService>();
+        services.AddSingleton<IPuppyService, PuppyService>();
+
         return services;
     }
 }
