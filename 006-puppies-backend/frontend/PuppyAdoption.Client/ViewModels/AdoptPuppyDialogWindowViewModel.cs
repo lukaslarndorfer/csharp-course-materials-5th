@@ -10,6 +10,8 @@ using OneOf.Types;
 using PuppyAdoption.Client.Core.Services;
 using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Views.Dialogs;
+using PuppyAdoption.Shared;
+using PuppyAdoption.Shared.Validators;
 
 namespace PuppyAdoption.Client.ViewModels;
 
@@ -19,10 +21,12 @@ namespace PuppyAdoption.Client.ViewModels;
 /// <param name="toastService">Toast notification service</param>
 /// <param name="puppyService">Puppy management service</param>
 /// <param name="logger">Application logger</param>
+/// <param name="validator">Validator for adoption requests, shared with the API</param>
 public partial class AdoptPuppyDialogWindowViewModel(
     IToastService toastService,
     IPuppyService puppyService,
-    ILogger<AdoptPuppyDialogWindowViewModel> logger)
+    ILogger<AdoptPuppyDialogWindowViewModel> logger,
+    AdoptPuppyRequestValidator validator)
     : PuppyOperationDialogViewModel<AdoptPuppyDialogWindowViewModel.AdoptionInformation?>
 {
     /// <summary>
@@ -65,6 +69,14 @@ public partial class AdoptPuppyDialogWindowViewModel(
         string adopterName = AdopterName.Trim();
         try
         {
+            var validationResult = await validator.ValidateAsync(new AdoptPuppyRequest(adopterName));
+            if (!validationResult.IsValid)
+            {
+                toastService.ShowError(validationResult.ToMessage());
+
+                return;
+            }
+
             OneOf<Success<LocalDate>, NotFound, IPuppyService.AlreadyAdopted> result
                 = await puppyService.AdoptPuppyAsync(PuppyId, adopterName);
             result.Switch(success =>
@@ -103,7 +115,8 @@ public sealed class DesignAdoptPuppyDialogWindowViewModel : AdoptPuppyDialogWind
     public DesignAdoptPuppyDialogWindowViewModel()
         : base(new DesignFacades.DummyToastService(),
                new DesignFacades.DummyPuppyService(),
-               new LoggerFactory().CreateLogger<AdoptPuppyDialogWindowViewModel>())
+               new LoggerFactory().CreateLogger<AdoptPuppyDialogWindowViewModel>(),
+               new AdoptPuppyRequestValidator())
     {
         PuppyId = 1;
         PuppyName = "Buddy";

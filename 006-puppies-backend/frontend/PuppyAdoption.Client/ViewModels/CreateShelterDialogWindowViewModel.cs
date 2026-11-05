@@ -10,6 +10,7 @@ using PuppyAdoption.Client.Core.Services;
 using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Views.Dialogs;
 using PuppyAdoption.Shared;
+using PuppyAdoption.Shared.Validators;
 
 namespace PuppyAdoption.Client.ViewModels;
 
@@ -19,10 +20,12 @@ namespace PuppyAdoption.Client.ViewModels;
 /// <param name="shelterService">Service for managing shelters</param>
 /// <param name="toastService">Toast notification service</param>
 /// <param name="logger">Application logger</param>
+/// <param name="validator">Validator for shelter requests, shared with the API</param>
 public partial class CreateShelterDialogWindowViewModel(
     IShelterService shelterService,
     IToastService toastService,
-    ILogger<CreateShelterDialogWindowViewModel> logger) : DialogViewModelBase<ShelterDto?>
+    ILogger<CreateShelterDialogWindowViewModel> logger,
+    CreateShelterRequestValidator validator) : DialogViewModelBase<ShelterDto?>
 {
     /// <summary>
     ///     Flag indicating whether the dialog is currently processing
@@ -52,6 +55,14 @@ public partial class CreateShelterDialogWindowViewModel(
         Processing = true;
         try
         {
+            var validationResult = await validator.ValidateAsync(new CreateShelterRequest(ShelterName));
+            if (!validationResult.IsValid)
+            {
+                toastService.ShowError(validationResult.ToMessage());
+
+                return;
+            }
+
             OneOf<Success<ShelterDto>, IShelterService.NameAlreadyExists> shelterResult
                 = await shelterService.CreateNewShelterAsync(ShelterName);
             shelterResult.Switch(success =>
@@ -86,4 +97,5 @@ public partial class CreateShelterDialogWindowViewModel(
 public sealed class DesignCreateShelterDialogWindowViewModel()
     : CreateShelterDialogWindowViewModel(new DesignFacades.DummyShelterService(),
                                          new DesignFacades.DummyToastService(),
-                                         new DesignFacades.DummyLogger<CreateShelterDialogWindowViewModel>());
+                                         new DesignFacades.DummyLogger<CreateShelterDialogWindowViewModel>(),
+                                         new CreateShelterRequestValidator());

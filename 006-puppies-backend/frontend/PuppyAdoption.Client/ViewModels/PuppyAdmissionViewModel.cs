@@ -15,6 +15,7 @@ using PuppyAdoption.Client.Shared;
 using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Views;
 using PuppyAdoption.Shared;
+using PuppyAdoption.Shared.Validators;
 
 namespace PuppyAdoption.Client.ViewModels;
 
@@ -27,13 +28,15 @@ namespace PuppyAdoption.Client.ViewModels;
 /// <param name="logger">Application logger</param>
 /// <param name="toastService">Toast notification service</param>
 /// <param name="options">Application settings</param>
+/// <param name="validator">Validator for admission requests, shared with the API</param>
 public partial class PuppyAdmissionViewModel(
     IImageProcessor imageProcessor,
     IPuppyService puppyService,
     IDateTimeProvider dateTimeProvider,
     ILogger<PuppyAdmissionViewModel> logger,
     IToastService toastService,
-    IOptions<Settings> options) : ShelterOperationViewModel
+    IOptions<Settings> options,
+    AdmitPuppyRequestValidator validator) : ShelterOperationViewModel
 {
     public int MaxImageSize { get; } = options.Value.MaxImageSizePixel;
 
@@ -93,6 +96,16 @@ public partial class PuppyAdmissionViewModel(
 
         LocalDate dateValue = DateOfBirth.Value;
 
+        var request = new AdmitPuppyRequest(PuppyName, Breed, dateValue, _imageData);
+        var validationResult = await validator.ValidateAsync(request);
+        if (!validationResult.IsValid)
+        {
+            toastService.ShowError(validationResult.ToMessage());
+            Processing = false;
+
+            return;
+        }
+
         try
         {
             var admitResult
@@ -111,8 +124,8 @@ public partial class PuppyAdmissionViewModel(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to create shelter");
-            toastService.ShowError("Failed to create shelter. Please try again.");
+            logger.LogError(ex, "Failed to admit puppy");
+            toastService.ShowError("Failed to admit puppy. Please try again.");
         }
         finally
         {
