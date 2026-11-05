@@ -19,3 +19,5 @@ public sealed record PuppyDto(
 public sealed record AdoptPuppyResponse(LocalDate DateAdopted);
 
 public sealed record ShelterDto(int Id, string Name);
+
+public sealed record ShelterListResponse(IReadOnlyList<ShelterDto> Shelters);
