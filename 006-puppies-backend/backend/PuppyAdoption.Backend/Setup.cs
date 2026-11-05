@@ -1,5 +1,6 @@
 using FluentValidation;
 using PuppyAdoption.Backend.Persistence.Util;
+using PuppyAdoption.Backend.Shared;
 using PuppyAdoption.Backend.Services;
 using PuppyAdoption.Backend.Util;
 using PuppyAdoption.Backend.Services.Util;
@@ -33,6 +34,7 @@ public static class Setup
         /// </summary>
         public void MapApplicationEndpoints()
         {
+            app.MapControllers();
         }
     }
 
@@ -43,7 +45,8 @@ public static class Setup
         {
             services.ConfigurePersistence(configurationManager, isDev);
             services.ConfigureCore();
-
+            services.AddControllers()
+                    .AddJsonOptions(o => JsonConfig.ConfigureJsonSerialization(o.JsonSerializerOptions, isDev));
         }
 
         public Settings LoadAndConfigureSettings(IConfigurationManager configurationManager)
