@@ -1,8 +1,9 @@
-﻿using PuppyAdoption.Client.Util;
+﻿using Avalonia.Controls;
+using PuppyAdoption.Client.Util;
 
 namespace PuppyAdoption.Client.Views;
 
-public partial class PuppyOverview : ScopedControl
+public partial class PuppyOverview : UserControl
 {
     public PuppyOverview()
     {

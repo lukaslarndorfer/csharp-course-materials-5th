@@ -8,9 +8,9 @@ using Microsoft.Extensions.Options;
 using NodaTime;
 using OneOf;
 using OneOf.Types;
-using PuppyAdoption.Client.ViewModels;
 using PuppyAdoption.Client.Core.Services;
 using PuppyAdoption.Client.Shared;
+using PuppyAdoption.Client.ViewModels;
 using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Client.Util;
@@ -23,7 +23,8 @@ public static class DesignFacades
     public sealed class DummyLogger<T> : ILogger<T>
     {
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
-                                Func<TState, Exception?, string> formatter) { }
+                                Func<TState, Exception?, string> formatter)
+        { }
 
         public bool IsEnabled(LogLevel logLevel) => true;
 
@@ -86,7 +87,7 @@ public static class DesignFacades
     {
         public Task<TResult>
             ShowModalDialogAsync<TDialogWindow, TDialogViewModel, TResult>(
-                Action<TDialogViewModel>? viewModelConfiguration = null) where TDialogWindow : ScopedWindow, new()
+                Action<TDialogViewModel>? viewModelConfiguration = null) where TDialogWindow : Window, new()
                                                                          where TDialogViewModel :
                                                                          DialogViewModelBase<TResult> =>
             Task.FromResult(default(TResult)!);

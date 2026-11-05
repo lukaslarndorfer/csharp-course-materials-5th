@@ -1,8 +1,9 @@
-﻿using PuppyAdoption.Client.Util;
+﻿using Avalonia.Controls;
+using PuppyAdoption.Client.Util;
 
 namespace PuppyAdoption.Client.Views.Dialogs;
 
-public sealed partial class CreateShelterDialogWindow : ScopedWindow
+public sealed partial class CreateShelterDialogWindow : Window
 {
     public CreateShelterDialogWindow()
     {

@@ -1,4 +1,4 @@
-<util:ScopedWindow xmlns="https://github.com/avaloniaui"
+<Window xmlns="https://github.com/avaloniaui"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,4 +19,4 @@
         </StackPanel>
         <ProgressBar Grid.Row="2" IsIndeterminate="True" IsVisible="{Binding Processing}" />
     </Grid>
-</util:ScopedWindow>
+</Window>

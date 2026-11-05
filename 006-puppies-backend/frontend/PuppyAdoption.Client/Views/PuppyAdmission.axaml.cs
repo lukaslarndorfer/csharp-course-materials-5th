@@ -7,12 +7,11 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform.Storage;
-using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.ViewModels;
 
 namespace PuppyAdoption.Client.Views;
 
-public partial class PuppyAdmission : ScopedControl
+public partial class PuppyAdmission : UserControl
 {
     public PuppyAdmission()
     {

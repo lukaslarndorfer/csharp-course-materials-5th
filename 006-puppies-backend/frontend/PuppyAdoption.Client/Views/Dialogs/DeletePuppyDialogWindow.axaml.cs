@@ -1,8 +1,8 @@
-﻿using PuppyAdoption.Client.Util;
+﻿using Avalonia.Controls;
 
 namespace PuppyAdoption.Client.Views.Dialogs;
 
-public partial class DeletePuppyDialogWindow : ScopedWindow
+public partial class DeletePuppyDialogWindow : Window
 {
     public DeletePuppyDialogWindow()
     {

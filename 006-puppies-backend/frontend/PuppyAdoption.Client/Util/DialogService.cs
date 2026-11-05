@@ -25,7 +25,7 @@ public interface IDialogService
     /// <returns>An awaitable Task with the result of the dialog</returns>
     public Task<TResult> ShowModalDialogAsync<TDialogWindow, TDialogViewModel, TResult>(
         Action<TDialogViewModel>? viewModelConfiguration = null)
-        where TDialogWindow : ScopedWindow, new()
+        where TDialogWindow : Window, new()
         where TDialogViewModel : DialogViewModelBase<TResult>;
 
     /// <summary>
@@ -42,7 +42,7 @@ internal sealed class DialogService : IDialogService
 
     public async Task<TResult> ShowModalDialogAsync<TDialogWindow, TDialogViewModel, TResult>(
         Action<TDialogViewModel>? viewModelConfiguration = null)
-        where TDialogWindow : ScopedWindow, new()
+        where TDialogWindow : Window, new()
         where TDialogViewModel : DialogViewModelBase<TResult>
     {
         if (_owner is null)
