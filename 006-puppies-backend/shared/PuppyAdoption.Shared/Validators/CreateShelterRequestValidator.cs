@@ -1,7 +1,5 @@
 ﻿using FluentValidation;
-using PuppyAdoption.Shared;
-
-namespace PuppyAdoption.Backend.Validators;
+namespace PuppyAdoption.Shared.Validators;
 
 public class CreateShelterRequestValidator : AbstractValidator<CreateShelterRequest>
 {

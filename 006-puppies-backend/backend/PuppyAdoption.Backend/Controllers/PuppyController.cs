@@ -4,9 +4,10 @@ using OneOf.Types;
 using PuppyAdoption.Backend.Persistence.Model;
 using PuppyAdoption.Backend.Persistence.Util;
 using PuppyAdoption.Backend.Services;
+using PuppyAdoption.Backend.Shared;
 using PuppyAdoption.Backend.Util;
-using PuppyAdoption.Backend.Validators;
 using PuppyAdoption.Shared;
+using PuppyAdoption.Shared.Validators;
 
 namespace PuppyAdoption.Backend.Controllers;
 
@@ -67,7 +68,7 @@ public sealed class PuppyController(
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async ValueTask<IActionResult> AdmitPuppy([FromRoute] int shelterId, [FromBody] AdmitPuppyRequest request)
     {
-        if (!ValidateRequest(request, new AdmitPuppyRequestValidator(clock), out string[]? validationErrors))
+        if (!ValidateRequest(request, new AdmitPuppyRequestValidator(clock, Const.TimeZone), out string[]? validationErrors))
         {
             logger.LogWarning("AdmitPuppy request validation failed: {ValidationErrors}",
                               string.Join(", ", validationErrors ?? []));
@@ -87,9 +88,9 @@ public sealed class PuppyController(
             await transaction.BeginTransactionAsync();
 
             OneOf<Success<Puppy>, NotFound> result = await service.AdmitPuppyAsync(shelterId, request.Name,
-                                                                                   request.Breed,
-                                                                                   request.DateOfBirth,
-                                                                                   request.ImageData);
+                 request.Breed,
+                 request.DateOfBirth,
+                 request.ImageData);
 
             return await result.Match<Task<IActionResult>>(async success =>
             {

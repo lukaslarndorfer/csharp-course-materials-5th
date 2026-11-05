@@ -1,8 +1,7 @@
 ﻿using FluentValidation;
-using PuppyAdoption.Backend.Shared;
-using PuppyAdoption.Shared;
+using NodaTime;
 
-namespace PuppyAdoption.Backend.Validators;
+namespace PuppyAdoption.Shared.Validators;
 
 /// <summary>
 ///     Validation for admitting a new puppy to a shelter
@@ -19,7 +18,9 @@ public sealed class AdmitPuppyRequestValidator : AbstractValidator<AdmitPuppyReq
     /// </summary>
     public const int MaxTextLength = 100;
 
-    public AdmitPuppyRequestValidator(IClock clock)
+    /// <param name="clock">Clock used to determine the current date</param>
+    /// <param name="timeZone">Time zone in which "today" is determined</param>
+    public AdmitPuppyRequestValidator(IClock clock, DateTimeZone timeZone)
     {
         RuleFor(x => x.Name)
             .NotEmpty()
@@ -30,7 +31,7 @@ public sealed class AdmitPuppyRequestValidator : AbstractValidator<AdmitPuppyReq
             .MaximumLength(MaxTextLength);
 
         RuleFor(x => x.DateOfBirth)
-            .Must(dateOfBirth => dateOfBirth <= Today(clock))
+            .Must(dateOfBirth => dateOfBirth <= Today(clock, timeZone))
             .WithMessage("must not be in the future");
 
         When(x => x.ImageData is not null, () =>
@@ -41,5 +42,5 @@ public sealed class AdmitPuppyRequestValidator : AbstractValidator<AdmitPuppyReq
         });
     }
 
-    private static LocalDate Today(IClock clock) => clock.GetCurrentInstant().InZone(Const.TimeZone).Date;
+    private static LocalDate Today(IClock clock, DateTimeZone timeZone) => clock.GetCurrentInstant().InZone(timeZone).Date;
 }

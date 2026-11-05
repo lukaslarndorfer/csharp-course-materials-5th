@@ -1,7 +1,5 @@
 using FluentValidation;
-using PuppyAdoption.Shared;
-
-namespace PuppyAdoption.Backend.Validators;
+namespace PuppyAdoption.Shared.Validators;
 
 /// <summary>
 ///     Validation for adopting a puppy

@@ -5,8 +5,8 @@ using PuppyAdoption.Backend.Persistence.Model;
 using PuppyAdoption.Backend.Persistence.Util;
 using PuppyAdoption.Backend.Services;
 using PuppyAdoption.Backend.Util;
-using PuppyAdoption.Backend.Validators;
 using PuppyAdoption.Shared;
+using PuppyAdoption.Shared.Validators;
 
 namespace PuppyAdoption.Backend.Controllers;
 
@@ -78,7 +78,7 @@ public sealed class ShelterController(
     public async ValueTask<IActionResult> CreateShelter([FromBody] CreateShelterRequest request)
     {
         if (!ValidateRequest<CreateShelterRequestValidator, CreateShelterRequest>(request,
-             out string[]? validationErrors))
+                 out string[]? validationErrors))
         {
             logger.LogWarning("CreateShelter request validation failed: {ValidationErrors}",
                               string.Join(", ", validationErrors ?? []));
