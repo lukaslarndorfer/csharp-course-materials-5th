@@ -33,8 +33,8 @@ public sealed class Program
             EnvironmentName = EnvironmentName
         });
 
-        var config = AddConfiguration(builder);
-        RegisterServices(builder, config);
+        AddConfiguration(builder);
+        RegisterServices(builder);
         ConfigureLogging(builder);
 
         using var host = builder.Build();
@@ -55,7 +55,7 @@ public sealed class Program
                   .WithInterFont()
                   .LogToTrace();
 
-    private static void RegisterServices(HostApplicationBuilder builder, ConfigurationManager config)
+    private static void RegisterServices(HostApplicationBuilder builder)
     {
         builder.Services
                .AddSharedServices()
@@ -65,12 +65,9 @@ public sealed class Program
                .AddSingleton<IDialogService, DialogService>();
     }
 
-    private static ConfigurationManager AddConfiguration(HostApplicationBuilder builder)
+    private static void AddConfiguration(HostApplicationBuilder builder)
     {
-        var config = builder.Configuration;
-        builder.Services.Configure<Settings>(config.GetSection(Settings.SectionKey));
-
-        return config;
+        builder.Services.Configure<Settings>(builder.Configuration.GetSection(Settings.SectionKey));
     }
 
     private static void ConfigureLogging(HostApplicationBuilder builder)
