@@ -1,6 +1,6 @@
 using FluentValidation;
 using PuppyAdoption.Backend.Persistence.Util;
-using PuppyAdoption.Backend.Shared;
+using PuppyAdoption.Shared;
 using PuppyAdoption.Backend.Services;
 using PuppyAdoption.Backend.Util;
 using PuppyAdoption.Backend.Services.Util;

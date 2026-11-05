@@ -1,6 +1,7 @@
 using System.Text.Json;
 using PuppyAdoption.Backend.Persistence.Util;
 using PuppyAdoption.Backend.Shared;
+using PuppyAdoption.Shared;
 using PuppyAdoption.Backend.TestInt.Util;
 
 namespace PuppyAdoption.Backend.TestInt.Util;

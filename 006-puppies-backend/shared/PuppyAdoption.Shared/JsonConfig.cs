@@ -1,8 +1,9 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using NodaTime;
 using NodaTime.Serialization.SystemTextJson;
 
-namespace PuppyAdoption.Backend.Shared;
+namespace PuppyAdoption.Shared;
 
 public static class JsonConfig
 {
