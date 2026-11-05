@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using PuppyAdoption.Client.Core.Services;
 using PuppyAdoption.Client.Shared;
 
 namespace PuppyAdoption.Client.Core;
@@ -15,7 +16,7 @@ public static class Setup
             var settings = sp.GetRequiredService<IOptions<Settings>>().Value;
             client.BaseAddress = new Uri(settings.ApiBaseUrl);
         });
-
+        services.AddSingleton<IShelterService, ShelterService>();
         return services;
     }
 }
