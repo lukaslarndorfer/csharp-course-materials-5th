@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using NodaTime;
 using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Core;
-using PuppyAdoption.Client.Persistence;
 using PuppyAdoption.Client.Shared;
 using Serilog;
 
@@ -61,7 +60,6 @@ public sealed class Program
         builder.Services
                .AddSharedServices()
                .AddCoreServices()
-               .AddPersistenceServices(config.GetConnectionString("Postgres"))
                .AddTransient<IImageProcessor, ImageProcessor>()
                .AddSingleton<IToastService, ToastService>()
                .AddSingleton<IDialogService, DialogService>();

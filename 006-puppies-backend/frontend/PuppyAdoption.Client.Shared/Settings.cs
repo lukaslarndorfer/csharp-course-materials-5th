@@ -9,6 +9,8 @@ public class Settings
 {
     public const string SectionKey = "General";
 
+    public required string ApiBaseUrl { get; set; }
+
     /// <summary>
     ///     Defines the maximum width and height of images in pixels
     /// </summary>
