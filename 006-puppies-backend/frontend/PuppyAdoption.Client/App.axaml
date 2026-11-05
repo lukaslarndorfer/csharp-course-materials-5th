@@ -1,7 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="PuppyAdoption.Backend.Client.App"
-             xmlns:local="using:PuppyAdoption.Backend.Client"
+             x:Class="PuppyAdoption.Client.App"
+             xmlns:local="using:PuppyAdoption.Client"
              RequestedThemeVariant="Default">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
     <Application.DataTemplates>
@@ -13,7 +13,7 @@
                 <!-- Included mostly just for demo purposes and used rarely -->
                 <ResourceInclude Source="avares://PuppyAdoption.Client/Styles/Colors.axaml" />
             </ResourceDictionary.MergedDictionaries>
-            <FontFamily x:Key="RubikFont">avares://PuppyAdoption.Backend.Client/Assets/Fonts#Rubik</FontFamily>
+            <FontFamily x:Key="RubikFont">avares://PuppyAdoption.Client/Assets/Fonts#Rubik</FontFamily>
         </ResourceDictionary>
     </Application.Resources>
     <Application.Styles>

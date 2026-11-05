@@ -2,12 +2,12 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                    xmlns:util="clr-namespace:PuppyAdoption.Backend.Client.Util"
-                    xmlns:views="clr-namespace:PuppyAdoption.Backend.Client.Views"
-                    xmlns:vm="clr-namespace:PuppyAdoption.Backend.Client.ViewModels"
+                    xmlns:util="clr-namespace:PuppyAdoption.Client.Util"
+                    xmlns:views="clr-namespace:PuppyAdoption.Client.Views"
+                    xmlns:vm="clr-namespace:PuppyAdoption.Client.ViewModels"
                     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                     x:DataType="vm:PuppyOverviewViewModel"
-                    x:Class="PuppyAdoption.Backend.Client.Views.PuppyOverview">
+                    x:Class="PuppyAdoption.Client.Views.PuppyOverview">
     <Design.DataContext>
         <vm:DesignPuppyOverviewViewModel />
     </Design.DataContext>

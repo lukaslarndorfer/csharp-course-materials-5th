@@ -2,11 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                    xmlns:util="clr-namespace:PuppyAdoption.Backend.Client.Util"
-                    xmlns:vm="clr-namespace:PuppyAdoption.Backend.Client.ViewModels"
+                    xmlns:util="clr-namespace:PuppyAdoption.Client.Util"
+                    xmlns:vm="clr-namespace:PuppyAdoption.Client.ViewModels"
                     mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
                     x:DataType="vm:PuppyListViewModel"
-                    x:Class="PuppyAdoption.Backend.Client.Views.PuppyList">
+                    x:Class="PuppyAdoption.Client.Views.PuppyList">
     <Control.Styles>
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml" />
     </Control.Styles>

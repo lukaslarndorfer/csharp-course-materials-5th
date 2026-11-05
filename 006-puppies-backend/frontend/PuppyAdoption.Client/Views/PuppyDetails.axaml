@@ -2,11 +2,11 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                    xmlns:util="clr-namespace:PuppyAdoption.Backend.Client.Util"
-                    xmlns:vm="clr-namespace:PuppyAdoption.Backend.Client.ViewModels"
+                    xmlns:util="clr-namespace:PuppyAdoption.Client.Util"
+                    xmlns:vm="clr-namespace:PuppyAdoption.Client.ViewModels"
                     mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="750"
                     x:DataType="vm:PuppyDetailsViewModel"
-                    x:Class="PuppyAdoption.Backend.Client.Views.PuppyDetails">
+                    x:Class="PuppyAdoption.Client.Views.PuppyDetails">
     <UserControl.Styles>
         <StyleInclude Source="avares://PuppyAdoption.Client/Styles/DetailTable.axaml" />
     </UserControl.Styles>

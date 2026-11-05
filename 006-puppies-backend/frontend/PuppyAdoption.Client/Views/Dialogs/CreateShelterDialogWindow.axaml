@@ -1,11 +1,11 @@
 <util:ScopedWindow xmlns="https://github.com/avaloniaui"
                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-                   xmlns:vm="using:PuppyAdoption.Backend.Client.ViewModels"
+                   xmlns:vm="using:PuppyAdoption.Client.ViewModels"
                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-                   xmlns:util="clr-namespace:PuppyAdoption.Backend.Client.Util"
+                   xmlns:util="clr-namespace:PuppyAdoption.Client.Util"
                    mc:Ignorable="d" d:DesignWidth="220" d:DesignHeight="150"
-                   x:Class="PuppyAdoption.Backend.Client.Views.Dialogs.CreateShelterDialogWindow"
+                   x:Class="PuppyAdoption.Client.Views.Dialogs.CreateShelterDialogWindow"
                    x:DataType="vm:CreateShelterDialogWindowViewModel"
                    Title="Create Shelter">
     <Design.DataContext>
