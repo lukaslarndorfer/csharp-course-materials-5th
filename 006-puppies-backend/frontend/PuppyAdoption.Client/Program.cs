@@ -6,9 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NodaTime;
-using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Core;
 using PuppyAdoption.Client.Shared;
+using PuppyAdoption.Client.Util;
 using Serilog;
 
 namespace PuppyAdoption.Client;

@@ -10,10 +10,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NodaTime;
 using OneOf.Types;
-using PuppyAdoption.Client.Util;
-using PuppyAdoption.Client.Views;
 using PuppyAdoption.Client.Core.Services;
 using PuppyAdoption.Client.Shared;
+using PuppyAdoption.Client.Util;
+using PuppyAdoption.Client.Views;
 using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Client.ViewModels;

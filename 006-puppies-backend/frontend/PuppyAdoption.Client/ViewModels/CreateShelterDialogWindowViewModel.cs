@@ -6,9 +6,9 @@ using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using OneOf.Types;
+using PuppyAdoption.Client.Core.Services;
 using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Views.Dialogs;
-using PuppyAdoption.Client.Core.Services;
 using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Client.ViewModels;

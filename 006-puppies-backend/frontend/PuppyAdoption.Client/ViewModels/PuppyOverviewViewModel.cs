@@ -6,10 +6,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
 using OneOf;
 using OneOf.Types;
-using PuppyAdoption.Client.Util;
-using PuppyAdoption.Client.Views;
 using PuppyAdoption.Client.Core.Services;
 using PuppyAdoption.Client.Shared;
+using PuppyAdoption.Client.Util;
+using PuppyAdoption.Client.Views;
 using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Client.ViewModels;
@@ -81,21 +81,6 @@ public partial class PuppyOverviewViewModel(IPuppyService puppyService, ILogger<
                 logger.LogError(ex, "Failed to handle selected puppy changed event");
             }
         };
-    }
-
-    public override async ValueTask DisposeAsync()
-    {
-        if (PuppyListViewModel != null)
-        {
-            await PuppyListViewModel.DisposeAsync();
-        }
-
-        if (PuppyDetailsViewModel != null)
-        {
-            await PuppyDetailsViewModel.DisposeAsync();
-        }
-
-        await base.DisposeAsync();
     }
 
     [ObservableProperty]

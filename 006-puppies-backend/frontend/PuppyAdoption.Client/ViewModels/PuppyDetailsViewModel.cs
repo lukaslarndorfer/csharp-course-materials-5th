@@ -11,11 +11,11 @@ using NodaTime;
 using NodaTime.Text;
 using OneOf;
 using OneOf.Types;
+using PuppyAdoption.Client.Core.Services;
+using PuppyAdoption.Client.Shared;
 using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Views;
 using PuppyAdoption.Client.Views.Dialogs;
-using PuppyAdoption.Client.Core.Services;
-using PuppyAdoption.Client.Shared;
 
 namespace PuppyAdoption.Client.ViewModels;
 

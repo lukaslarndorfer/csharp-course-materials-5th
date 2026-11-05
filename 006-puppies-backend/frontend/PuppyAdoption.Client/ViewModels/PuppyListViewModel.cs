@@ -2,8 +2,8 @@
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using CommunityToolkit.Mvvm.ComponentModel;
-using PuppyAdoption.Client.Views;
 using PuppyAdoption.Client.Shared;
+using PuppyAdoption.Client.Views;
 using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Client.ViewModels;

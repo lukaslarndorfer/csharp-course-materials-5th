@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging;
 using NodaTime;
 using OneOf;
 using OneOf.Types;
+using PuppyAdoption.Client.Core.Services;
 using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Views.Dialogs;
-using PuppyAdoption.Client.Core.Services;
 
 namespace PuppyAdoption.Client.ViewModels;
 

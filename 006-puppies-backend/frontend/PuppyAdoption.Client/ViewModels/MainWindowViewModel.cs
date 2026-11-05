@@ -7,10 +7,10 @@ using Avalonia.Controls.Notifications;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using PuppyAdoption.Client.Core.Services;
 using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Views;
 using PuppyAdoption.Client.Views.Dialogs;
-using PuppyAdoption.Client.Core.Services;
 using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Client.ViewModels;
@@ -161,21 +161,11 @@ public partial class MainWindowViewModel(
         ShelterOperationViewModel? operationViewModel = null;
         if (tab == OverviewTab)
         {
-            if (OverviewViewModel is not null)
-            {
-                await OverviewViewModel.DisposeAsync();
-            }
-
             OverviewViewModel = App.CreateViewModel<PuppyOverviewViewModel>();
             operationViewModel = OverviewViewModel;
         }
         else if (tab == AdmissionsTab)
         {
-            if (AdmissionViewModel is not null)
-            {
-                await AdmissionViewModel.DisposeAsync();
-            }
-
             AdmissionViewModel = App.CreateViewModel<PuppyAdmissionViewModel>();
             operationViewModel = AdmissionViewModel;
         }

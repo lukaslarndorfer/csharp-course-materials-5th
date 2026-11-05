@@ -59,10 +59,7 @@ public sealed class App : Application
             throw new InvalidOperationException("Service provider is not initialized");
         }
 
-        var scope = _serviceProvider.CreateScope();
-        var viewModel = ActivatorUtilities.CreateInstance<T>(scope.ServiceProvider);
-        viewModel.AttachScope(scope);
-
+        var viewModel = ActivatorUtilities.CreateInstance<T>(_serviceProvider);
         return viewModel;
     }
 }

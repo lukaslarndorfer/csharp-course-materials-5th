@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.Extensions.DependencyInjection;
 using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Client.ViewModels;
@@ -10,32 +9,7 @@ namespace PuppyAdoption.Client.ViewModels;
 ///     Base class for all view models in the application.
 ///     Has to be disposable to clean up the service scope used for dependency injection.
 /// </summary>
-public abstract class ViewModelBase : ObservableObject, IAsyncDisposable
-{
-    private IServiceScope? _serviceScope;
-
-    public virtual async ValueTask DisposeAsync()
-    {
-        if (_serviceScope is IAsyncDisposable serviceScopeAsyncDisposable)
-        {
-            await serviceScopeAsyncDisposable.DisposeAsync();
-        }
-        else
-        {
-            _serviceScope?.Dispose();
-        }
-    }
-
-    /// <summary>
-    ///     Attaches a service scope to the view model.
-    ///     Only called during view model creation.
-    /// </summary>
-    /// <param name="serviceScope">The service scope to use</param>
-    internal void AttachScope(IServiceScope serviceScope)
-    {
-        _serviceScope = serviceScope;
-    }
-}
+public abstract class ViewModelBase : ObservableObject;
 
 /// <summary>
 ///     Base class for dialog view models
