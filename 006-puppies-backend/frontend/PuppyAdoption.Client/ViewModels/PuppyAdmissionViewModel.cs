@@ -13,9 +13,8 @@ using OneOf.Types;
 using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Views;
 using PuppyAdoption.Client.Core.Services;
-using PuppyAdoption.Client.Persistence;
-using PuppyAdoption.Client.Persistence.Model;
 using PuppyAdoption.Client.Shared;
+using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Client.ViewModels;
 
@@ -34,8 +33,7 @@ public partial class PuppyAdmissionViewModel(
     IDateTimeProvider dateTimeProvider,
     ILogger<PuppyAdmissionViewModel> logger,
     IToastService toastService,
-    IOptions<Settings> options,
-    ITransactionProvider transaction) : ShelterOperationViewModel
+    IOptions<Settings> options) : ShelterOperationViewModel
 {
     public int MaxImageSize { get; } = options.Value.MaxImageSizePixel;
 
@@ -66,7 +64,7 @@ public partial class PuppyAdmissionViewModel(
                     && PuppyName.Trim().Length > 0
                     && Breed.Trim().Length > 0;
 
-    public override async ValueTask InitAsync(Shelter shelter)
+    public override async ValueTask InitAsync(ShelterDto shelter)
     {
         await base.InitAsync(shelter);
         DateOfBirth = dateTimeProvider.GetLocalDate(); // today
@@ -95,22 +93,26 @@ public partial class PuppyAdmissionViewModel(
 
         LocalDate dateValue = DateOfBirth.Value;
 
-        await transaction.BeginTransactionAsync();
         try
         {
             var admitResult
-                = await puppyService.AdmitPuppyAsync(SelectedShelter, PuppyName, Breed, dateValue, _imageData);
+                = await puppyService.AdmitPuppyAsync(SelectedShelter.Id, PuppyName, Breed, dateValue, _imageData);
 
-            await transaction.CommitAsync();
-            ResetValues();
-            toastService.ShowSuccess("Shelter admitted puppy!");
-            logger.LogInformation("Successfully admitted puppy with Id {Id}", admitResult.Id);
+            admitResult.Switch(success =>
+            {
+                ResetValues();
+                toastService.ShowSuccess("Shelter admitted puppy!");
+                logger.LogInformation("Successfully admitted puppy with Id {Id}", success.Value.Id);
+            }, notFound =>
+            {
+                toastService.ShowError("Corresponding shelter not found, please try again!");
+                logger.LogWarning("Shelter with id {Id} not found", SelectedShelter.Id);
+            });
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to create shelter");
             toastService.ShowError("Failed to create shelter. Please try again.");
-            await transaction.RollbackAsync();
         }
         finally
         {

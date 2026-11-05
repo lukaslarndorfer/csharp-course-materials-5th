@@ -11,7 +11,7 @@ using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Views;
 using PuppyAdoption.Client.Views.Dialogs;
 using PuppyAdoption.Client.Core.Services;
-using PuppyAdoption.Client.Persistence.Model;
+using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Client.ViewModels;
 
@@ -55,14 +55,14 @@ public partial class MainWindowViewModel(
     /// <summary>
     ///     An observable collection of all shelters
     /// </summary>
-    public ObservableCollection<Shelter> Shelters { get; } = [];
+    public ObservableCollection<ShelterDto> Shelters { get; } = [];
 
     /// <summary>
     ///     The currently selected shelter
     /// </summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanActivateTab))]
-    public partial Shelter? SelectedShelter { get; set; }
+    public partial ShelterDto? SelectedShelter { get; set; }
 
     /// <summary>
     ///     A flag indicating whether the application is currently processing an operation
@@ -95,7 +95,7 @@ public partial class MainWindowViewModel(
         try
         {
             Processing = true;
-            IReadOnlyCollection<Shelter> allShelters = await shelterService.GetAllSheltersAsync();
+            IReadOnlyCollection<ShelterDto> allShelters = await shelterService.GetAllSheltersAsync();
             foreach (var shelter in allShelters)
             {
                 Shelters.Add(shelter);
@@ -124,7 +124,7 @@ public partial class MainWindowViewModel(
     private async Task CreateShelterAsync()
     {
         var result = await dialogService
-            .ShowModalDialogAsync<CreateShelterDialogWindow, CreateShelterDialogWindowViewModel, Shelter?>();
+            .ShowModalDialogAsync<CreateShelterDialogWindow, CreateShelterDialogWindowViewModel, ShelterDto?>();
         if (result is null)
         {
             return;
@@ -156,7 +156,7 @@ public partial class MainWindowViewModel(
         }
     }
 
-    private async ValueTask ActivateTabAsync(string tab, Shelter selectedShelter)
+    private async ValueTask ActivateTabAsync(string tab, ShelterDto selectedShelter)
     {
         ShelterOperationViewModel? operationViewModel = null;
         if (tab == OverviewTab)
@@ -191,7 +191,7 @@ public partial class MainWindowViewModel(
         }
     }
 
-    async partial void OnSelectedShelterChanged(Shelter? value)
+    async partial void OnSelectedShelterChanged(ShelterDto? value)
     {
         try
         {

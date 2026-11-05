@@ -10,9 +10,8 @@ using OneOf;
 using OneOf.Types;
 using PuppyAdoption.Client.ViewModels;
 using PuppyAdoption.Client.Core.Services;
-using PuppyAdoption.Client.Persistence;
-using PuppyAdoption.Client.Persistence.Model;
 using PuppyAdoption.Client.Shared;
+using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Client.Util;
 
@@ -24,8 +23,7 @@ public static class DesignFacades
     public sealed class DummyLogger<T> : ILogger<T>
     {
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception,
-                                Func<TState, Exception?, string> formatter)
-        { }
+                                Func<TState, Exception?, string> formatter) { }
 
         public bool IsEnabled(LogLevel logLevel) => true;
 
@@ -34,32 +32,33 @@ public static class DesignFacades
 
     public sealed class DummyShelterService : IShelterService
     {
-        public ValueTask<OneOf<Success<Shelter>, IShelterService.NameAlreadyExists>>
+        public ValueTask<OneOf<Success<ShelterDto>, IShelterService.NameAlreadyExists>>
             CreateNewShelterAsync(string name) =>
             throw new NotImplementedException();
 
-        public ValueTask<OneOf<Shelter, NotFound>> GetShelterByIdAsync(int id) => throw new NotImplementedException();
-
-        public ValueTask<IReadOnlyCollection<Shelter>> GetAllSheltersAsync() =>
-            ValueTask.FromResult<IReadOnlyCollection<Shelter>>([
-                new Shelter { Id = 1, Name = "Happy Paws Shelter", Puppies = []},
-                new Shelter { Id = 2, Name = "Best Friends Institution", Puppies = []}
+        public ValueTask<IReadOnlyList<ShelterDto>> GetAllSheltersAsync() =>
+            ValueTask.FromResult<IReadOnlyList<ShelterDto>>([
+                new ShelterDto(1, "Happy Paws Shelter"),
+                new ShelterDto(2, "Best Friends Institution")
             ]);
     }
 
     public sealed class DummyPuppyService : IPuppyService
     {
-        public ValueTask<IReadOnlyCollection<PuppyInformation>> GetAllPuppiesAsync(Shelter shelter) =>
-            ValueTask.FromResult<IReadOnlyCollection<PuppyInformation>>([
-                new PuppyInformation(1, "Buddy", false),
-                new PuppyInformation(2, "Bella", true)
-            ]);
+        public ValueTask<OneOf<Success<PuppyInformationResponse>, NotFound>> GetAllPuppiesAsync(int shelterId) =>
+            ValueTask.FromResult<OneOf<Success<PuppyInformationResponse>, NotFound>>(
+                new Success<PuppyInformationResponse>(new PuppyInformationResponse([
+                    new PuppyInformationDto(1, "Buddy", false),
+                    new PuppyInformationDto(2, "Bella", true)
+                ])));
 
-        public ValueTask<Puppy> AdmitPuppyAsync(Shelter shelter, string name, string breed, LocalDate dateOfBirth,
-                                                byte[]? imageData) =>
+        public ValueTask<OneOf<Success<PuppyDto>, NotFound>> AdmitPuppyAsync(
+            int shelterId, string name, string breed, LocalDate dateOfBirth, byte[]? imageData) =>
             throw new NotImplementedException();
 
-        public ValueTask<OneOf<Puppy, NotFound>> GetPuppyByIdAsync(int puppyId) => throw new NotImplementedException();
+        public ValueTask<OneOf<PuppyDto, NotFound>> GetPuppyByIdAsync(int puppyId) =>
+            throw new NotImplementedException();
+
         public ValueTask<OneOf<Success, NotFound>> DeletePuppyAsync(int puppyId) => throw new NotImplementedException();
 
         public ValueTask<OneOf<Success<LocalDate>, NotFound, IPuppyService.AlreadyAdopted>>
@@ -95,29 +94,14 @@ public static class DesignFacades
         public void SetOwner(Window window) { }
     }
 
-    public sealed class DummyTransactionProvider : ITransactionProvider
-    {
-        public ValueTask BeginTransactionAsync() => ValueTask.CompletedTask;
-
-        public ValueTask CommitAsync() => ValueTask.CompletedTask;
-
-        public ValueTask RollbackAsync() => ValueTask.CompletedTask;
-
-        public void Dispose()
-        {
-            // TODO release managed resources here
-        }
-
-        public ValueTask DisposeAsync() => ValueTask.CompletedTask;
-    }
-
     public sealed class DummySettings : IOptions<Settings>
     {
         public Settings Value =>
             new()
             {
                 TimeZoneId = "Europe/Vienna",
-                MaxImageSizePixel = 400
+                MaxImageSizePixel = 400,
+                ApiBaseUrl = "http://localhost:5200/api/"
             };
     }
 }

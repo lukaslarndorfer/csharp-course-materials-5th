@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.DependencyInjection;
-using PuppyAdoption.Client.Persistence.Model;
+using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Client.ViewModels;
 
@@ -86,13 +86,13 @@ public abstract class ShelterOperationViewModel : ViewModelBase
     /// <summary>
     ///     The currently selected shelter
     /// </summary>
-    protected Shelter? SelectedShelter { get; private set; }
+    protected ShelterDto? SelectedShelter { get; private set; }
 
     /// <summary>
     ///     Initializes the view model with the given shelter
     /// </summary>
     /// <param name="shelter">The shelter to use</param>
-    public virtual ValueTask InitAsync(Shelter shelter)
+    public virtual ValueTask InitAsync(ShelterDto shelter)
     {
         SelectedShelter = shelter;
 

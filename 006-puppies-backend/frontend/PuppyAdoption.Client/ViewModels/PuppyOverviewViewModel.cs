@@ -4,11 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Extensions.Logging;
+using OneOf;
+using OneOf.Types;
 using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Views;
 using PuppyAdoption.Client.Core.Services;
-using PuppyAdoption.Client.Persistence.Model;
 using PuppyAdoption.Client.Shared;
+using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Client.ViewModels;
 
@@ -20,17 +22,17 @@ namespace PuppyAdoption.Client.ViewModels;
 public partial class PuppyOverviewViewModel(IPuppyService puppyService, ILogger<PuppyOverviewViewModel> logger)
     : ShelterOperationViewModel
 {
+    private ObservableCollection<PuppyInformationDto> _puppies = [];
 
-    private ObservableCollection<PuppyInformation> _puppies = [];
-
-
-    public override async ValueTask InitAsync(Shelter shelter)
+    public override async ValueTask InitAsync(ShelterDto shelter)
     {
         await base.InitAsync(shelter);
         PuppyListViewModel = App.CreateViewModel<PuppyListViewModel>();
         PuppyDetailsViewModel = App.CreateViewModel<PuppyDetailsViewModel>();
         PuppyListViewModel.Loading = true;
-        _puppies = [.. await puppyService.GetAllPuppiesAsync(shelter)];
+        OneOf<Success<PuppyInformationResponse>, NotFound> result = await puppyService.GetAllPuppiesAsync(shelter.Id);
+        result.Switch(success => { _puppies = [.. success.Value.Puppies]; },
+                      notFound => { logger.LogWarning("Shelter {Id} not found", shelter.Id); });
         PuppyListViewModel.Loading = false;
         PuppyListViewModel.Puppies = _puppies;
 
@@ -69,6 +71,7 @@ public partial class PuppyOverviewViewModel(IPuppyService puppyService, ILogger<
 
                         return;
                     }
+
                     _puppies.Remove(puppy);
                     PuppyListViewModel.SelectedPuppy = null;
                 });
@@ -78,8 +81,6 @@ public partial class PuppyOverviewViewModel(IPuppyService puppyService, ILogger<
                 logger.LogError(ex, "Failed to handle selected puppy changed event");
             }
         };
-
-
     }
 
     public override async ValueTask DisposeAsync()
@@ -95,7 +96,6 @@ public partial class PuppyOverviewViewModel(IPuppyService puppyService, ILogger<
         }
 
         await base.DisposeAsync();
-
     }
 
     [ObservableProperty]

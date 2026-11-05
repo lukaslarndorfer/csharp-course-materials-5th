@@ -9,8 +9,7 @@ using OneOf.Types;
 using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Views.Dialogs;
 using PuppyAdoption.Client.Core.Services;
-using PuppyAdoption.Client.Persistence;
-using PuppyAdoption.Client.Persistence.Model;
+using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Client.ViewModels;
 
@@ -18,14 +17,12 @@ namespace PuppyAdoption.Client.ViewModels;
 ///     View model for the <see cref="CreateShelterDialogWindow" />
 /// </summary>
 /// <param name="shelterService">Service for managing shelters</param>
-/// <param name="transaction">Transaction provider</param>
 /// <param name="toastService">Toast notification service</param>
 /// <param name="logger">Application logger</param>
 public partial class CreateShelterDialogWindowViewModel(
     IShelterService shelterService,
-    ITransactionProvider transaction,
     IToastService toastService,
-    ILogger<CreateShelterDialogWindowViewModel> logger) : DialogViewModelBase<Shelter?>
+    ILogger<CreateShelterDialogWindowViewModel> logger) : DialogViewModelBase<ShelterDto?>
 {
     /// <summary>
     ///     Flag indicating whether the dialog is currently processing
@@ -53,30 +50,25 @@ public partial class CreateShelterDialogWindowViewModel(
         }
 
         Processing = true;
-        await transaction.BeginTransactionAsync();
         try
         {
-            OneOf<Success<Shelter>, IShelterService.NameAlreadyExists> shelterResult
+            OneOf<Success<ShelterDto>, IShelterService.NameAlreadyExists> shelterResult
                 = await shelterService.CreateNewShelterAsync(ShelterName);
-            await shelterResult.Match<ValueTask>(async success =>
-                                                 {
-                                                     await transaction.CommitAsync();
-                                                     toastService.ShowSuccess("Shelter created successfully!");
-                                                     Close(success.Value);
-                                                 },
-                                                 async nameExists =>
-                                                 {
-                                                     await transaction.RollbackAsync();
-                                                     toastService
-                                                         .ShowMessage($"Shelter with name '{ShelterName}' already exists",
-                                                                      "Name exists", NotificationType.Warning);
-                                                 });
+            shelterResult.Switch(success =>
+            {
+                toastService.ShowSuccess("Shelter created successfully!");
+                Close(success.Value);
+            }, nameExists =>
+            {
+                toastService
+                    .ShowMessage($"Shelter with name '{ShelterName}' already exists",
+                                 "Name exists", NotificationType.Warning);
+            });
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to create shelter");
             toastService.ShowError("Failed to create shelter. Please try again.");
-            await transaction.RollbackAsync();
         }
         finally
         {
@@ -93,6 +85,5 @@ public partial class CreateShelterDialogWindowViewModel(
 
 public sealed class DesignCreateShelterDialogWindowViewModel()
     : CreateShelterDialogWindowViewModel(new DesignFacades.DummyShelterService(),
-                                         new DesignFacades.DummyTransactionProvider(),
                                          new DesignFacades.DummyToastService(),
                                          new DesignFacades.DummyLogger<CreateShelterDialogWindowViewModel>());

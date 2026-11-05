@@ -15,7 +15,6 @@ using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Views;
 using PuppyAdoption.Client.Views.Dialogs;
 using PuppyAdoption.Client.Core.Services;
-using PuppyAdoption.Client.Persistence.Model;
 using PuppyAdoption.Client.Shared;
 
 namespace PuppyAdoption.Client.ViewModels;
@@ -161,7 +160,7 @@ public partial class PuppyDetailsViewModel(
                     AdoptedBy = puppy.AdoptedBy;
                 }
 
-                SetImage(puppy.Image);
+                SetImage(puppy.ImageData);
                 DataSet = true;
             }, notFound => { toastService.ShowWarning($"No puppy with id {puppyId} found"); });
         }

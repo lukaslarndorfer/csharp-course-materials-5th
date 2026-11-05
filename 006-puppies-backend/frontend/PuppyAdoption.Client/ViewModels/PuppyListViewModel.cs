@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using CommunityToolkit.Mvvm.ComponentModel;
 using PuppyAdoption.Client.Views;
 using PuppyAdoption.Client.Shared;
+using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Client.ViewModels;
 
@@ -13,10 +14,10 @@ namespace PuppyAdoption.Client.ViewModels;
 public partial class PuppyListViewModel : ViewModelBase
 {
     [ObservableProperty]
-    public partial ObservableCollection<PuppyInformation> Puppies { get; set; } = [];
+    public partial ObservableCollection<PuppyInformationDto> Puppies { get; set; } = [];
 
     [ObservableProperty]
-    public partial PuppyInformation? SelectedPuppy { get; set; }
+    public partial PuppyInformationDto? SelectedPuppy { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowEmptyHint))]
@@ -28,13 +29,13 @@ public partial class PuppyListViewModel : ViewModelBase
 
     public bool ShowEmptyHint => !HasEntries && !Loading;
 
-    partial void OnSelectedPuppyChanged(PuppyInformation? oldValue, PuppyInformation? newValue)
+    partial void OnSelectedPuppyChanged(PuppyInformationDto? oldValue, PuppyInformationDto? newValue)
     {
         SelectedPuppyChanged?.Invoke(newValue?.Id);
     }
 
-    partial void OnPuppiesChanged(ObservableCollection<PuppyInformation> oldValue,
-                                  ObservableCollection<PuppyInformation> newValue)
+    partial void OnPuppiesChanged(ObservableCollection<PuppyInformationDto> oldValue,
+                                  ObservableCollection<PuppyInformationDto> newValue)
     {
         OnPropertyChanged(nameof(HasEntries));
         OnPropertyChanged(nameof(ShowEmptyHint));

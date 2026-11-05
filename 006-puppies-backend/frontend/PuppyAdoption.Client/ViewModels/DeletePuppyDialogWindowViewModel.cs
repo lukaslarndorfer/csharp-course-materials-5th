@@ -9,20 +9,17 @@ using OneOf.Types;
 using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Views.Dialogs;
 using PuppyAdoption.Client.Core.Services;
-using PuppyAdoption.Client.Persistence;
 
 namespace PuppyAdoption.Client.ViewModels;
 
 /// <summary>
 ///     View model for the <see cref="DeletePuppyDialogWindow" />
 /// </summary>
-/// <param name="transaction">Transaction provider</param>
 /// <param name="toastService">Toast notification service</param>
 /// <param name="puppyService">Puppy management service</param>
 /// <param name="logger">Application logger</param>
 public partial class DeletePuppyDialogWindowViewModel(
     IPuppyService puppyService,
-    ITransactionProvider transaction,
     IToastService toastService,
     ILogger<DeletePuppyDialogWindowViewModel> logger) : PuppyOperationDialogViewModel<bool>
 {
@@ -50,18 +47,15 @@ public partial class DeletePuppyDialogWindowViewModel(
         Processing = true;
         try
         {
-            await transaction.BeginTransactionAsync();
             OneOf<Success, NotFound> result = await puppyService.DeletePuppyAsync(PuppyId);
 
-            await result.Match<ValueTask>(async success =>
+            result.Switch(success =>
             {
-                await transaction.CommitAsync();
                 toastService.ShowSuccess("Puppy deleted successfully");
                 logger.LogInformation("Successfully deleted puppy with Id {Id}", PuppyId);
                 Close(true);
-            }, async notFound =>
+            }, notFound =>
             {
-                await transaction.RollbackAsync();
                 toastService.ShowError("Couldn't delete puppy");
                 logger.LogWarning("Unable to delete puppy with Id {Id}", PuppyId);
                 Close(false);
@@ -84,7 +78,6 @@ public sealed class DesignDeletePuppyDialogWindowViewModel : DeletePuppyDialogWi
 {
     public DesignDeletePuppyDialogWindowViewModel()
         : base(new DesignFacades.DummyPuppyService(),
-               new DesignFacades.DummyTransactionProvider(),
                new DesignFacades.DummyToastService(),
                new LoggerFactory().CreateLogger<DeletePuppyDialogWindowViewModel>())
     {

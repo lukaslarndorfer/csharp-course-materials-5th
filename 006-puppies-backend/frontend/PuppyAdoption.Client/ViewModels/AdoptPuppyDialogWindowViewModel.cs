@@ -10,19 +10,16 @@ using OneOf.Types;
 using PuppyAdoption.Client.Util;
 using PuppyAdoption.Client.Views.Dialogs;
 using PuppyAdoption.Client.Core.Services;
-using PuppyAdoption.Client.Persistence;
 
 namespace PuppyAdoption.Client.ViewModels;
 
 /// <summary>
 ///     View model for the <see cref="AdoptPuppyDialogWindow" />
 /// </summary>
-/// <param name="transaction">Transaction provider</param>
 /// <param name="toastService">Toast notification service</param>
 /// <param name="puppyService">Puppy management service</param>
 /// <param name="logger">Application logger</param>
 public partial class AdoptPuppyDialogWindowViewModel(
-    ITransactionProvider transaction,
     IToastService toastService,
     IPuppyService puppyService,
     ILogger<AdoptPuppyDialogWindowViewModel> logger)
@@ -68,25 +65,21 @@ public partial class AdoptPuppyDialogWindowViewModel(
         string adopterName = AdopterName.Trim();
         try
         {
-            await transaction.BeginTransactionAsync();
             OneOf<Success<LocalDate>, NotFound, IPuppyService.AlreadyAdopted> result
                 = await puppyService.AdoptPuppyAsync(PuppyId, adopterName);
-            await result.Match<ValueTask>(async success =>
+            result.Switch(success =>
             {
-                await transaction.CommitAsync();
                 logger.LogInformation("Puppy with id {Id} successfully adopted at {Date}", PuppyId, success.Value);
                 toastService.ShowMessage($"Puppy {PuppyName} has been adopted successfully!",
                                          "Adoption Successful", NotificationType.Success);
                 Close(new AdoptionInformation(adopterName, success.Value));
-            }, async notFound =>
+            }, notFound =>
             {
-                await transaction.RollbackAsync();
                 logger.LogWarning("Puppy with id {Id} not found", PuppyId);
                 toastService.ShowError("Puppy wasn't found");
                 Close(null);
-            }, async alreadyAdopted =>
+            }, alreadyAdopted =>
             {
-                await transaction.RollbackAsync();
                 logger.LogWarning("Puppy with id {Id} is already adopted", PuppyId);
                 toastService.ShowError("Puppy is already adopted!");
                 Close(null);
@@ -94,7 +87,6 @@ public partial class AdoptPuppyDialogWindowViewModel(
         }
         catch (Exception ex)
         {
-            await transaction.RollbackAsync();
             logger.LogError(ex, "Error occurred while trying to adopt puppy");
             toastService.ShowError("Error occurred while trying to adopt puppy");
             Close(null);
@@ -109,8 +101,7 @@ public partial class AdoptPuppyDialogWindowViewModel(
 public sealed class DesignAdoptPuppyDialogWindowViewModel : AdoptPuppyDialogWindowViewModel
 {
     public DesignAdoptPuppyDialogWindowViewModel()
-        : base(new DesignFacades.DummyTransactionProvider(),
-               new DesignFacades.DummyToastService(),
+        : base(new DesignFacades.DummyToastService(),
                new DesignFacades.DummyPuppyService(),
                new LoggerFactory().CreateLogger<AdoptPuppyDialogWindowViewModel>())
     {
