@@ -1,4 +1,4 @@
-namespace PuppyAdoption.Backend.Services.Util;
+﻿namespace PuppyAdoption.Backend.Services.Util;
 
 public sealed class Settings
 {

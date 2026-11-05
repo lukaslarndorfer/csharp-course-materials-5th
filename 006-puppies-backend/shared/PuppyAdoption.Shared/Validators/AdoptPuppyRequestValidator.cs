@@ -1,4 +1,4 @@
-using FluentValidation;
+﻿using FluentValidation;
 namespace PuppyAdoption.Shared.Validators;
 
 /// <summary>

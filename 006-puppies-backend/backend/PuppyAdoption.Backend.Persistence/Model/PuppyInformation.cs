@@ -1,4 +1,4 @@
-namespace PuppyAdoption.Backend.Persistence.Model;
+﻿namespace PuppyAdoption.Backend.Persistence.Model;
 
 /// <summary>
 ///     Read model with basic information about a puppy (projection used by the repository)

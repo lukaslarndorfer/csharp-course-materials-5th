@@ -1,9 +1,9 @@
-using FluentValidation;
+﻿using FluentValidation;
 using PuppyAdoption.Backend.Persistence.Util;
-using PuppyAdoption.Shared;
 using PuppyAdoption.Backend.Services;
-using PuppyAdoption.Backend.Util;
 using PuppyAdoption.Backend.Services.Util;
+using PuppyAdoption.Backend.Util;
+using PuppyAdoption.Shared;
 using Serilog;
 
 namespace PuppyAdoption.Backend;

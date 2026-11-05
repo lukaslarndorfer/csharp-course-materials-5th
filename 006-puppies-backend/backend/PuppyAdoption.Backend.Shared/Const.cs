@@ -1,4 +1,4 @@
-namespace PuppyAdoption.Backend.Shared;
+﻿namespace PuppyAdoption.Backend.Shared;
 
 public static class Const
 {

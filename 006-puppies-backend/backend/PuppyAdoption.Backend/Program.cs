@@ -1,6 +1,6 @@
+﻿using Microsoft.AspNetCore.Http.Json;
 using PuppyAdoption.Backend;
 using PuppyAdoption.Shared;
-using Microsoft.AspNetCore.Http.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 

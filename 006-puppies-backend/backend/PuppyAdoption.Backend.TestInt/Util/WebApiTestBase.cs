@@ -1,8 +1,8 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using PuppyAdoption.Backend.Persistence.Util;
 using PuppyAdoption.Backend.Shared;
-using PuppyAdoption.Shared;
 using PuppyAdoption.Backend.TestInt.Util;
+using PuppyAdoption.Shared;
 
 namespace PuppyAdoption.Backend.TestInt.Util;
 
@@ -21,7 +21,7 @@ public abstract class WebApiTestBase(WebApiTestFixture webApiFixture) : IClassFi
     protected HttpClient ApiClient => webApiFixture.Client;
     protected IClock TestClock => webApiFixture.Clock;
     protected CancellationToken TestCancellationToken => TestContext.Current.CancellationToken;
-    
+
     public async ValueTask InitializeAsync()
     {
         await webApiFixture.RestoreDatabaseAsync(ImportSeedDataAsync);

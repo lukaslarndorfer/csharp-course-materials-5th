@@ -49,14 +49,14 @@ internal sealed class ShelterService(IUnitOfWork uow, ILogger<ShelterService> lo
 
             return new NotFound();
         }
-        
+
         return shelter;
     }
 
     public async ValueTask<IReadOnlyCollection<Shelter>> GetAllSheltersAsync()
     {
         IReadOnlyCollection<Shelter> shelters = await uow.ShelterRepository.GetAllAsync();
-        
+
         return shelters;
     }
 
@@ -80,7 +80,7 @@ internal sealed class ShelterService(IUnitOfWork uow, ILogger<ShelterService> lo
 
         logger.LogInformation("Created new shelter with ID {ShelterId} and name {ShelterName}", shelter.Id,
                               shelter.Name);
-        
+
         return new Success<Shelter>(shelter);
     }
 }

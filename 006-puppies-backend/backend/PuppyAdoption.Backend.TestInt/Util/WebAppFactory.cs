@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc.Testing;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
@@ -10,7 +10,7 @@ namespace PuppyAdoption.Backend.TestInt.Util;
 internal sealed class WebAppFactory(string connectionString) : WebApplicationFactory<Program>
 {
     public static readonly LocalDateTime CurrentDateTimeForTests = new(2026, 01, 01, 14, 30, 00);
-    
+
     public IClock TestClock =>
         Services.GetService<IClock>() ??
         throw new InvalidOperationException("Service provider not available or clock not registered");
@@ -56,4 +56,3 @@ internal sealed class WebAppFactory(string connectionString) : WebApplicationFac
         }
     }
 }
-

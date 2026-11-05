@@ -1,4 +1,4 @@
-using FluentValidation;
+﻿using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace PuppyAdoption.Backend.Util;
