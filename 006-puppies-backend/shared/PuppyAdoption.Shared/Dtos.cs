@@ -16,4 +16,6 @@ public sealed record PuppyDto(
     string? AdoptedBy,
     byte[]? ImageData);
 
+public sealed record AdoptPuppyResponse(LocalDate DateAdopted);
+
 public sealed record ShelterDto(int Id, string Name);
