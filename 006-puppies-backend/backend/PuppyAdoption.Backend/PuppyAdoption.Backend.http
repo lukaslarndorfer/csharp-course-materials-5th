@@ -2,26 +2,115 @@
 
 # Execute in order for variables (with IDs) to work correctly
 
-### Add rocket
-POST {{Host}}/api/rockets
+### Create shelter
+POST {{Host}}/api/shelters
 Content-Type: application/json
 
 {
-    "modelName": "Ariane 5",
-    "manufacturer": "Arianespace",
-    "maxThrust": "13700000",
-    "payloadDeltaV": "205800000"
+    "name": "Happy Paws"
 }
 
 > {%
-    client.global.set("rocketId", response.body.id);
+    client.global.set("shelterId", response.body.id);
 %}
 
-### Get rocket by ID
-GET {{Host}}/api/rockets/{{rocketId}}
+### Create shelter with the same name (409 Conflict)
+POST {{Host}}/api/shelters
+Content-Type: application/json
 
-### Get all rockets
-GET {{Host}}/api/rockets
+{
+    "name": "Happy Paws"
+}
 
-### Delete rocket
-DELETE {{Host}}/api/rockets/{{rocketId}}
+### Create shelter with empty name (400 Bad Request)
+POST {{Host}}/api/shelters
+Content-Type: application/json
+
+{
+    "name": ""
+}
+
+### Get all shelters
+GET {{Host}}/api/shelters
+
+### Get shelter by ID
+GET {{Host}}/api/shelters/{{shelterId}}
+
+### Get shelter by ID (404 Not Found)
+GET {{Host}}/api/shelters/999999
+
+### Admit puppy
+POST {{Host}}/api/shelters/{{shelterId}}/puppies
+Content-Type: application/json
+
+{
+    "name": "Bello",
+    "breed": "Labrador",
+    "dateOfBirth": "2025-06-01",
+    "imageData": null
+}
+
+> {%
+    client.global.set("puppyId", response.body.id);
+%}
+
+### Admit puppy with future date of birth (400 Bad Request)
+POST {{Host}}/api/shelters/{{shelterId}}/puppies
+Content-Type: application/json
+
+{
+    "name": "Bello",
+    "breed": "Labrador",
+    "dateOfBirth": "2999-01-01",
+    "imageData": null
+}
+
+### Admit puppy to unknown shelter (404 Not Found)
+POST {{Host}}/api/shelters/999999/puppies
+Content-Type: application/json
+
+{
+    "name": "Bello",
+    "breed": "Labrador",
+    "dateOfBirth": "2025-06-01",
+    "imageData": null
+}
+
+### Get all puppies of a shelter
+GET {{Host}}/api/shelters/{{shelterId}}/puppies
+
+### Get puppy by ID
+GET {{Host}}/api/puppies/{{puppyId}}
+
+### Get puppy by ID (404 Not Found)
+GET {{Host}}/api/puppies/999999
+
+### Adopt puppy
+POST {{Host}}/api/puppies/{{puppyId}}/adoption
+Content-Type: application/json
+
+{
+    "adopterName": "Anna Muster"
+}
+
+### Adopt puppy again (409 Conflict)
+POST {{Host}}/api/puppies/{{puppyId}}/adoption
+Content-Type: application/json
+
+{
+    "adopterName": "Max Mustermann"
+}
+
+### Adopt puppy with empty adopter name (400 Bad Request)
+POST {{Host}}/api/puppies/{{puppyId}}/adoption
+Content-Type: application/json
+
+{
+    "adopterName": ""
+}
+
+### Delete puppy
+DELETE {{Host}}/api/puppies/{{puppyId}}
+
+### Delete puppy again (404 Not Found)
+DELETE {{Host}}/api/puppies/{{puppyId}}
